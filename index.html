@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PIPEPRO — 배관 현장 도우미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d27;
+    --bg3: #141720;
+    --border: #2a2d38;
+    --border2: #1e2130;
+    --text: #e8e2d4;
+    --text2: #bbb8b0;
+    --muted: #445;
+    --accent: #e07b39;
+    --accent2: #c96a2a;
+    --danger: #e05050;
+    --ok: #50c070;
+    --blue: #4a9ede;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── 앱 컨테이너 ── */
+  .app {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* ── 상단바 ── */
+  .topbar {
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #333;
+    margin-left: auto;
+    transition: background .3s;
+  }
+  .status-dot.active { background: var(--ok); }
+
+  /* ── 본문 ── */
+  .body { flex: 1; padding: 16px 20px; overflow-y: auto; }
+
+  /* ── 섹션 레이블 ── */
+  .slabel {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    margin-bottom: 7px;
+  }
+
+  /* ── API 키 입력 ── */
+  .key-wrap { margin-bottom: 20px; }
+  .key-row { display: flex; gap: 8px; }
+  .key-input {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .key-input:focus { border-color: var(--accent); }
+  .key-input::placeholder { color: #333; }
+  .key-btn {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .key-btn:hover { background: #2a1f14; }
+  .key-ok {
+    font-size: 11px;
+    color: var(--ok);
+    margin-top: 6px;
+    display: none;
+  }
+
+  /* ── 주소 검색 ── */
+  .search-wrap { margin-bottom: 16px; }
+  .search-row { display: flex; gap: 8px; margin-bottom: 5px; }
+  .addr-input {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    padding: 11px 12px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .addr-input:focus { border-color: var(--accent); }
+  .addr-input::placeholder { color: #333; }
+  .addr-small { max-width: 110px; flex: none; }
+  .search-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 16px;
+    cursor: pointer;
+    transition: background .2s;
+    letter-spacing: .3px;
+  }
+  .search-btn:hover { background: var(--accent2); }
+  .search-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+  .hint { font-size: 11px; color: #334; }
+
+  /* ── 결과 카드 ── */
+  .bcard {
+    background: var(--bg2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  .bhead {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .bname { font-size: 15px; font-weight: 500; color: var(--text); }
+  .baddr { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+  .badge {
+    font-size: 11px;
+    border-radius: 5px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge.danger { background: #2a1414; color: var(--danger); border: 1px solid #3d1818; }
+  .badge.warn   { background: #2a1f14; color: var(--accent); border: 1px solid #3d2a18; }
+  .badge.ok     { background: #142a18; color: var(--ok);     border: 1px solid #183d20; }
+
+  .igrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 11px 16px;
+    gap: 8px;
+    border-bottom: 1px solid var(--border2);
+  }
+  .iitem label {
+    font-size: 10px;
+    color: var(--muted);
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 3px;
+  }
+  .iitem span { font-size: 13px; color: var(--text2); font-weight: 500; }
+
+  .risksec { padding: 12px 16px; border-bottom: 1px solid var(--border2); }
+  .risktitle {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .risk-tag { font-size: 10px; border-radius: 4px; padding: 2px 7px; }
+  .rrow { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .rlabel { font-size: 12px; color: #556; width: 72px; flex-shrink: 0; }
+  .rtrack { flex: 1; height: 5px; background: var(--border2); border-radius: 3px; overflow: hidden; }
+  .rfill { height: 100%; border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+  .rpct { font-size: 12px; color: var(--muted); width: 30px; text-align: right; }
+
+  .detailsec { padding: 12px 16px; }
+  .dtitle {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 8px;
+  }
+  .drow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border2);
+  }
+  .drow:last-child { border-bottom: none; }
+  .drow span:first-child { color: var(--muted); }
+  .drow span:last-child { color: var(--text2); }
+
+  /* ── 로딩 / 에러 / 빈 화면 ── */
+  .empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #334;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .empty-icon {
+    width: 40px; height: 40px;
+    margin: 0 auto 12px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .empty-icon svg { width: 20px; height: 20px; stroke: var(--border); }
+  .loading {
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .errmsg {
+    padding: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--danger);
+    background: #2a1414;
+    border: 1px solid #3d1818;
+    border-radius: 8px;
+  }
+
+  /* ── 하단 네비 ── */
+  .bnav {
+    background: #0d1018;
+    border-top: 1px solid var(--border2);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 max(16px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
+  }
+  .nitem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 0 16px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nitem svg { width: 22px; height: 22px; }
+  .nlabel { font-size: 10px; color: #334; }
+  .nitem.active .nlabel { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 상단바 -->
+  <div class="topbar">
+    <div>
+      <div class="logo">PIPE<span>PRO</span></div>
+      <div class="logo-sub">배관 현장 도우미</div>
+    </div>
+    <div class="status-dot" id="status-dot"></div>
+  </div>
+
+  <!-- 본문 -->
+  <div class="body">
+
+    <!-- API 키 -->
+    <div class="key-wrap">
+      <div class="slabel">공공데이터 API 인증키</div>
+      <div class="key-row">
+        <input class="key-input" id="api-key" type="password" placeholder="발급받은 인증키를 입력하세요" />
+        <button class="key-btn" onclick="saveKey()">저장</button>
+      </div>
+      <div class="key-ok" id="key-ok">✓ 인증키가 저장되었습니다</div>
+    </div>
+
+    <!-- 주소 검색 -->
+    <div class="search-wrap">
+      <div class="slabel">건물 주소 검색</div>
+      <div class="search-row">
+        <input class="addr-input addr-small" id="sigungu" placeholder="시군구 (예: 마포구)" />
+        <input class="addr-input" id="bjdong" placeholder="번지 (예: 128 또는 128-3)" />
+        <button class="search-btn" id="sbtn" onclick="doSearch()" disabled>조회</button>
+      </div>
+      <div class="hint">* 인증키 저장 후 시군구명과 번지를 입력하세요</div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result">
+      <div class="empty">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        주소를 입력하면<br>실제 건물 정보와<br>배관 위험 분석이 표시됩니다
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 하단 네비 -->
+  <div class="bnav">
+    <div class="nitem active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#e07b39" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nlabel" style="color:#e07b39;">홈</span>
+    </div>
+    <div class="nitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#334" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="nlabel">도면</span>
+    </div>
+    <div class="nitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#334" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span class="nlabel">이력</span>
+    </div>
+    <div class="nitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#334" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+      <span class="nlabel">내정보</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const SIGUNGU_MAP = {
+  '종로구':'11110','중구':'11140','용산구':'11170','성동구':'11200','광진구':'11215',
+  '동대문구':'11230','중랑구':'11260','성북구':'11290','강북구':'11305','도봉구':'11320',
+  '노원구':'11350','은평구':'11380','서대문구':'11410','마포구':'11440','양천구':'11470',
+  '강서구':'11500','구로구':'11530','금천구':'11545','영등포구':'11560','동작구':'11590',
+  '관악구':'11620','서초구':'11650','강남구':'11680','송파구':'11710','강동구':'11740',
+  '수원시':'41110','성남시':'41130','안양시':'41170','부천시':'41190','광명시':'41210',
+  '평택시':'41220','고양시':'41280','용인시':'41460','파주시':'41480','화성시':'41590',
+  '부산중구':'26110','서구':'26140','동구':'26170','영도구':'26200','부산진구':'26230',
+  '대구중구':'27110','인천중구':'28110',
+};
+
+let savedKey = '';
+
+function saveKey() {
+  const k = document.getElementById('api-key').value.trim();
+  if (!k) return;
+  savedKey = k;
+  document.getElementById('key-ok').style.display = 'block';
+  document.getElementById('sbtn').disabled = false;
+  document.getElementById('status-dot').classList.add('active');
+  setTimeout(() => { document.getElementById('key-ok').style.display = 'none'; }, 2500);
+}
+
+async function doSearch() {
+  const sigungu = document.getElementById('sigungu').value.trim();
+  const bjdong  = document.getElementById('bjdong').value.trim();
+  if (!sigungu || !bjdong) { showErr('시군구명과 번지를 모두 입력하세요'); return; }
+  if (!savedKey) { showErr('인증키를 먼저 저장하세요'); return; }
+
+  const code = SIGUNGU_MAP[sigungu];
+  if (!code) { showErr('시군구명을 정확히 입력하세요\n예: 마포구, 강남구, 노원구'); return; }
+
+  showLoading();
+
+  try {
+    const parts = bjdong.split('-');
+    const bun = (parts[0] || '0').padStart(4, '0');
+    const ji  = (parts[1] || '0').padStart(4, '0');
+    const bjdongCd = code.slice(2).padStart(5, '0');
+
+    const url = `https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo`
+      + `?serviceKey=${encodeURIComponent(savedKey)}`
+      + `&sigunguCd=${code}&bjdongCd=${bjdongCd}`
+      + `&platGbCd=0&bun=${bun}&ji=${ji}`
+      + `&numOfRows=1&pageNo=1&_type=json`;
+
+    const res  = await fetch(url);
+    const data = await res.json();
+    const items = data?.response?.body?.items?.item;
+
+    if (!items) {
+      showErr('데이터를 찾을 수 없습니다.\n번지를 다시 확인해주세요.');
+      return;
+    }
+
+    renderResult(Array.isArray(items) ? items[0] : items, sigungu, bjdong);
+
+  } catch (e) {
+    showErr('API 호출 오류가 발생했습니다.\n인증키와 입력값을 확인해주세요.');
+  }
+}
+
+function calcRisk(age, struct) {
+  let r = 25;
+  if (age > 35) r += 45;
+  else if (age > 25) r += 30;
+  else if (age > 15) r += 15;
+  else if (age > 5)  r += 5;
+  if (struct.includes('조적')) r += 18;
+  if (struct.includes('목'))   r += 12;
+  return Math.min(r, 99);
+}
+
+function renderResult(d, sigungu, bjdong) {
+  const year   = d.useAprDay ? d.useAprDay.slice(0, 4) : '미상';
+  const age    = year !== '미상' ? (new Date().getFullYear() - parseInt(year)) : 0;
+  const struct = d.strctCdNm    || '미상';
+  const floors = (d.grndFlrCnt  || '-') + '층';
+  const purpose= d.mainPurpsCdNm|| '미상';
+  const addr   = d.platPlc      || `${sigungu} ${bjdong}`;
+
+  const risk   = calcRisk(age, struct);
+  const leak   = risk;
+  const block  = Math.round(risk * 0.82);
+  const freeze = Math.round(risk * 0.55);
+
+  const [bc, bt, rc, rt] = risk >= 70
+    ? ['danger', '⚠ 고위험', '#e05050', '고위험']
+    : risk >= 45
+    ? ['warn',   '주의',     '#e07b39', '중위험']
+    : ['ok',     '양호',     '#50c070', '저위험'];
+
+  document.getElementById('result').innerHTML = `
+    <div class="bcard">
+      <div class="bhead">
+        <div>
+          <div class="bname">${addr}</div>
+          <div class="baddr">${purpose} · 준공 ${year}년 · ${age}년 경과</div>
+        </div>
+        <div class="badge ${bc}">${bt}</div>
+      </div>
+
+      <div class="igrid">
+        <div class="iitem"><label>준공연도</label><span>${year}</span></div>
+        <div class="iitem"><label>층수</label><span>${floors}</span></div>
+        <div class="iitem"><label>구조</label><span>${struct}</span></div>
+      </div>
+
+      <div class="risksec">
+        <div class="risktitle">
+          AI 배관 위험 분석
+          <span class="risk-tag" style="background:${rc}22;color:${rc};border:1px solid ${rc}44;">${rt}</span>
+        </div>
+        <div class="rrow">
+          <span class="rlabel">누수 위험</span>
+          <div class="rtrack"><div class="rfill" style="width:0%;background:#e05050;" data-w="${leak}"></div></div>
+          <span class="rpct">${leak}%</span>
+        </div>
+        <div class="rrow">
+          <span class="rlabel">배관 막힘</span>
+          <div class="rtrack"><div class="rfill" style="width:0%;background:#e07b39;" data-w="${block}"></div></div>
+          <span class="rpct">${block}%</span>
+        </div>
+        <div class="rrow">
+          <span class="rlabel">동파 위험</span>
+          <div class="rtrack"><div class="rfill" style="width:0%;background:#4a9ede;" data-w="${freeze}"></div></div>
+          <span class="rpct">${freeze}%</span>
+        </div>
+      </div>
+
+      <div class="detailsec">
+        <div class="dtitle">건물 상세정보</div>
+        <div class="drow"><span>주용도</span><span>${purpose}</span></div>
+        <div class="drow"><span>지하층수</span><span>${d.ugrndFlrCnt || 0}층</span></div>
+        <div class="drow"><span>세대수</span><span>${d.hhldCnt || '-'}세대</span></div>
+        <div class="drow"><span>연면적</span><span>${d.totArea ? Math.round(d.totArea).toLocaleString() + '㎡' : '-'}</span></div>
+        <div class="drow"><span>건폐율</span><span>${d.bcRat ? Math.round(d.bcRat) + '%' : '-'}</span></div>
+      </div>
+    </div>`;
+
+  // 애니메이션
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.rfill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  });
+}
+
+function showLoading() {
+  document.getElementById('result').innerHTML =
+    `<div class="loading"><span class="spinner"></span>실제 데이터 조회 중...</div>`;
+}
+
+function showErr(msg) {
+  document.getElementById('result').innerHTML =
+    `<div class="errmsg">${msg.replace(/\n/g,'<br>')}</div>`;
+}
+
+document.getElementById('bjdong').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
