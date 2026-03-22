@@ -111,6 +111,26 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .errmsg { padding: 14px; text-align: center; font-size: 14px; color: var(--danger); background: #2a1414; border: 1px solid #3d1818; border-radius: 8px; font-weight: 500; }
 
+  /* 수리 이력 */
+  .history-sec { padding: 14px 16px; border-top: 1px solid var(--border2); }
+  .history-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .history-add-btn { font-size: 12px; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-weight: 600; font-family: 'Barlow', sans-serif; }
+  .history-form { background: var(--bg3); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: none; }
+  .history-form.open { display: block; }
+  .history-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 10px 12px; outline: none; margin-bottom: 8px; }
+  .history-input:focus { border-color: var(--accent); }
+  .history-input::placeholder { color: #4a5070; }
+  .history-textarea { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 10px 12px; outline: none; margin-bottom: 8px; resize: none; height: 80px; }
+  .history-textarea:focus { border-color: var(--accent); }
+  .history-textarea::placeholder { color: #4a5070; }
+  .history-save-btn { background: var(--accent); border: none; border-radius: 6px; color: #fff; font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; padding: 10px 16px; cursor: pointer; width: 100%; }
+  .history-item { background: var(--bg3); border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; border-left: 3px solid var(--accent); }
+  .history-item-date { font-size: 11px; color: var(--muted); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .history-item-location { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+  .history-item-memo { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .history-delete { font-size: 11px; color: var(--danger); background: none; border: none; cursor: pointer; padding: 0; font-weight: 600; }
+  .history-empty { font-size: 13px; color: var(--border); text-align: center; padding: 16px 0; }
+
   /* 하단 네비 */
   .bnav { background: #151825; border-top: 1px solid var(--border2); display: flex; justify-content: space-around; padding: 12px 0 max(16px, env(safe-area-inset-bottom)); flex-shrink: 0; }
   .nitem { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 0 16px; }
@@ -256,6 +276,64 @@ function saveRecent(sigungu, dong, bunji, result) {
   renderRecent();
 }
 
+// 수리 이력 관련
+let currentAddr = '';
+
+function toggleHistoryForm() {
+  const form = document.getElementById('history-form');
+  form.classList.toggle('open');
+}
+
+function saveHistory() {
+  const location = document.getElementById('h-location').value.trim();
+  const memo = document.getElementById('h-memo').value.trim();
+  if (!location && !memo) return;
+
+  const key = 'pipepro_history_' + btoa(encodeURIComponent(currentAddr));
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  list.unshift({
+    id: Date.now(),
+    date: new Date().toLocaleDateString('ko-KR'),
+    location,
+    memo
+  });
+  localStorage.setItem(key, JSON.stringify(list));
+
+  document.getElementById('h-location').value = '';
+  document.getElementById('h-memo').value = '';
+  document.getElementById('history-form').classList.remove('open');
+  renderHistory();
+}
+
+function deleteHistory(id) {
+  const key = 'pipepro_history_' + btoa(encodeURIComponent(currentAddr));
+  let list = JSON.parse(localStorage.getItem(key) || '[]');
+  list = list.filter(h => h.id !== id);
+  localStorage.setItem(key, JSON.stringify(list));
+  renderHistory();
+}
+
+function renderHistory() {
+  const key = 'pipepro_history_' + btoa(encodeURIComponent(currentAddr));
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  const el = document.getElementById('history-list');
+  if (!el) return;
+  if (list.length === 0) {
+    el.innerHTML = '<div class="history-empty">수리 이력이 없습니다</div>';
+    return;
+  }
+  el.innerHTML = list.map(h => `
+    <div class="history-item">
+      <div class="history-item-date">
+        <span>${h.date}</span>
+        <button class="history-delete" onclick="deleteHistory(${h.id})">삭제</button>
+      </div>
+      ${h.location ? `<div class="history-item-location">📍 ${h.location}</div>` : ''}
+      ${h.memo ? `<div class="history-item-memo">${h.memo}</div>` : ''}
+    </div>
+  `).join('');
+}
+
 function renderRecent() {
   const wrap = document.getElementById('recent-wrap');
   const list = document.getElementById('recent-list');
@@ -398,6 +476,18 @@ async function doSearch(type) {
   }
 }
 
+function calcElecRisk(age, struct, underground) {
+  let r = 20;
+  if (age > 35) r += 50;
+  else if (age > 25) r += 35;
+  else if (age > 15) r += 15;
+  else if (age > 5)  r += 5;
+  if (struct.includes('조적')) r += 15;
+  if (struct.includes('목'))   r += 20;
+  if (underground > 0) r += 10;
+  return Math.min(r, 99);
+}
+
 function calcRisk(age, struct) {
   let r = 25;
   if (age > 35) r += 45;
@@ -418,11 +508,14 @@ function renderResult(d, sigungu, dong, bunji) {
   const purpose = d.mainPurpsCdNm || '미상';
   const addr    = d.platPlc       || `${sigungu} ${dong} ${bunji}`;
   const bldName = d.bldNm         || '';
+  currentAddr = addr;
 
   const risk   = calcRisk(age, struct);
   const leak   = risk;
   const block  = Math.round(risk * 0.82);
   const freeze = Math.round(risk * 0.55);
+  const underground = parseInt(d.ugrndFlrCnt) || 0;
+  const elec = calcElecRisk(age, struct, underground);
 
   const [bc, bt, rc, rt] = risk >= 70
     ? ['danger', '⚠ 고위험', '#e05050', '고위험']
@@ -471,6 +564,7 @@ function renderResult(d, sigungu, dong, bunji) {
         <div class="rrow"><span class="rlabel">누수 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e05050;" data-w="${leak}"></div></div><span class="rpct">${leak}%</span></div>
         <div class="rrow"><span class="rlabel">배관 막힘</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e07b39;" data-w="${block}"></div></div><span class="rpct">${block}%</span></div>
         <div class="rrow"><span class="rlabel">동파 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#4a9ede;" data-w="${freeze}"></div></div><span class="rpct">${freeze}%</span></div>
+        <div class="rrow"><span class="rlabel">누전 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#f0c040;" data-w="${elec}"></div></div><span class="rpct">${elec}%</span></div>
       </div>
       <div class="detailsec">
         <div class="dtitle">건물 상세정보</div>
@@ -480,6 +574,18 @@ function renderResult(d, sigungu, dong, bunji) {
         <div class="drow"><span>연면적</span><span>${d.totArea ? Math.round(d.totArea).toLocaleString() + '㎡' : '-'}</span></div>
         <div class="drow"><span>건폐율</span><span>${d.bcRat ? Math.round(d.bcRat) + '%' : '-'}</span></div>
       </div>
+      <div class="history-sec" id="history-sec">
+        <div class="history-title">
+          <span>수리 이력</span>
+          <button class="history-add-btn" onclick="toggleHistoryForm()">+ 이력 추가</button>
+        </div>
+        <div class="history-form" id="history-form">
+          <input class="history-input" id="h-location" placeholder="위치 (예: 3층 화장실 배수관)" />
+          <textarea class="history-textarea" id="h-memo" placeholder="작업 내용 (예: 배수관 교체, PVC 50mm)"></textarea>
+          <button class="history-save-btn" onclick="saveHistory()">저장</button>
+        </div>
+        <div id="history-list"></div>
+      </div>
     </div>`;
 
   requestAnimationFrame(() => {
@@ -487,6 +593,7 @@ function renderResult(d, sigungu, dong, bunji) {
       el.style.width = el.dataset.w + '%';
     });
   });
+  setTimeout(renderHistory, 100);
 }
 
 function showLoading() {
