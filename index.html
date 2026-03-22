@@ -159,11 +159,11 @@
       <!-- 지번 주소 -->
       <div class="search-panel active" id="panel-jibun">
         <div class="search-row">
-          <input class="addr-input" id="sigungu" placeholder="시군구  예) 고양시 덕양구" style="flex:1" />
-          <input class="addr-input" id="dong" placeholder="법정동  예) 주교동" style="flex:1.2" />
+          <input class="addr-input" id="sigungu" placeholder="시군구  예) 고양시 일산동구" style="flex:1" />
+          <input class="addr-input" id="dong" placeholder="법정동  예) 식사동" style="flex:1.2" />
         </div>
         <div class="search-row">
-          <input class="addr-input" id="bunji" placeholder="번지  예) 600" />
+          <input class="addr-input" id="bunji" placeholder="번지  예) 1510" />
           <button class="search-btn" onclick="doSearch('jibun')">조회</button>
         </div>
       </div>
@@ -825,6 +825,26 @@ function renderResult(d, sigungu, dong, bunji, elevData) {
         <div class="iitem"><label>구조</label><span>${struct}</span></div>
       </div>
 
+      <div class="detailsec">
+        <div class="dtitle">건물 상세정보</div>
+        <div class="drow"><span>주용도</span><span>${purpose}</span></div>
+        <div class="drow"><span>지하층수</span><span>${d.ugrndFlrCnt || 0}층</span></div>
+        <div class="drow"><span>세대수</span><span>${d.hhldCnt || '-'}세대</span></div>
+        <div class="drow"><span>연면적</span><span>${d.totArea ? Math.round(d.totArea).toLocaleString() + '㎡' : '-'}</span></div>
+        <div class="drow"><span>건폐율</span><span>${d.bcRat ? Math.round(d.bcRat) + '%' : '-'}</span></div>
+      </div>
+
+      <div class="risksec">
+        <div class="risktitle">
+          AI 배관 위험 분석
+          <span class="risk-tag" style="background:${rc}22;color:${rc};border:1px solid ${rc}44;">${rt}</span>
+        </div>
+        <div class="rrow"><span class="rlabel">누수 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e05050;" data-w="${leak}"></div></div><span class="rpct">${leak}%</span></div>
+        <div class="rrow"><span class="rlabel">배관 막힘</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e07b39;" data-w="${block}"></div></div><span class="rpct">${block}%</span></div>
+        <div class="rrow"><span class="rlabel">동파 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#4a9ede;" data-w="${freeze}"></div></div><span class="rpct">${freeze}%</span></div>
+        <div class="rrow"><span class="rlabel">누전 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#f0c040;" data-w="${elec}"></div></div><span class="rpct">${elec}%</span></div>
+      </div>
+
       <div class="pipesec">
         <div class="pipetitle">
           AI 배관 구조 추정
@@ -839,16 +859,6 @@ function renderResult(d, sigungu, dong, bunji, elevData) {
         <div style="font-size:12px;color:var(--muted);margin-top:8px;padding:8px;background:#1a1d2a;border-radius:6px;">${mat.desc}</div>
       </div>
 
-      <div class="risksec">
-        <div class="risktitle">
-          AI 배관 위험 분석
-          <span class="risk-tag" style="background:${rc}22;color:${rc};border:1px solid ${rc}44;">${rt}</span>
-        </div>
-        <div class="rrow"><span class="rlabel">누수 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e05050;" data-w="${leak}"></div></div><span class="rpct">${leak}%</span></div>
-        <div class="rrow"><span class="rlabel">배관 막힘</span><div class="rtrack"><div class="rfill" style="width:0%;background:#e07b39;" data-w="${block}"></div></div><span class="rpct">${block}%</span></div>
-        <div class="rrow"><span class="rlabel">동파 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#4a9ede;" data-w="${freeze}"></div></div><span class="rpct">${freeze}%</span></div>
-        <div class="rrow"><span class="rlabel">누전 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#f0c040;" data-w="${elec}"></div></div><span class="rpct">${elec}%</span></div>
-      </div>
       ${elevResult ? `
       <div class="risksec" style="border-top:1px solid var(--border2);">
         <div class="risktitle">
@@ -861,14 +871,6 @@ function renderResult(d, sigungu, dong, bunji, elevData) {
           ${elevResult.detail ? ` · ${elevResult.detail}` : ''}
         </div>
       </div>` : ''}
-      <div class="detailsec">
-        <div class="dtitle">건물 상세정보</div>
-        <div class="drow"><span>주용도</span><span>${purpose}</span></div>
-        <div class="drow"><span>지하층수</span><span>${d.ugrndFlrCnt || 0}층</span></div>
-        <div class="drow"><span>세대수</span><span>${d.hhldCnt || '-'}세대</span></div>
-        <div class="drow"><span>연면적</span><span>${d.totArea ? Math.round(d.totArea).toLocaleString() + '㎡' : '-'}</span></div>
-        <div class="drow"><span>건폐율</span><span>${d.bcRat ? Math.round(d.bcRat) + '%' : '-'}</span></div>
-      </div>
       <div class="history-sec" id="history-sec">
         <div class="history-title">
           <span>수리 이력</span>
