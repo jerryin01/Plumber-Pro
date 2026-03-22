@@ -159,11 +159,11 @@
       <!-- 지번 주소 -->
       <div class="search-panel active" id="panel-jibun">
         <div class="search-row">
-          <input class="addr-input" id="sigungu" placeholder="시군구  예) 중구" style="flex:1" />
-          <input class="addr-input" id="dong" placeholder="법정동  예) 태평로1가" style="flex:1.2" />
+          <input class="addr-input" id="sigungu" placeholder="시군구  예) 고양시 덕양구" style="flex:1" />
+          <input class="addr-input" id="dong" placeholder="법정동  예) 주교동" style="flex:1.2" />
         </div>
         <div class="search-row">
-          <input class="addr-input" id="bunji" placeholder="번지  예) 31" />
+          <input class="addr-input" id="bunji" placeholder="번지  예) 600" />
           <button class="search-btn" onclick="doSearch('jibun')">조회</button>
         </div>
       </div>
@@ -247,6 +247,11 @@ const DONG_MAP = {
   '을지로4가':'11800','을지로5가':'11900','을지로6가':'12000','을지로7가':'12100',
   '신당동':'12200','황학동':'12300','중림동':'12400','의주로1가':'12500',
   '의주로2가':'12600','순화동':'12700','봉래동1가':'12800','봉래동2가':'12900',
+  // 고양시 덕양구
+  '주교동':'10600','원당동':'10100','화정동':'10200','행신동':'10300','신원동':'10400',
+  '관산동':'10500','벽제동':'10700','고양동':'10800','대자동':'10900','지축동':'11000',
+  '효자동':'11100','삼송동':'11200','원흥동':'11300','도내동':'11400','내유동':'11500',
+  '오금동':'11600','성사동':'11700','대장동':'11800','토당동':'11900','현천동':'12000',
   // 고양시 일산동구
   '사리현동':'10900','식사동':'10100','장항동':'10700','마두동':'10200',
   '백석동':'10300','중산동':'10400','정발산동':'10500','풍동':'10600',
@@ -325,7 +330,7 @@ function renderHistory() {
   el.innerHTML = list.map(h => `
     <div class="history-item">
       <div class="history-item-date">
-        <span>${h.date}</span>
+        <span>📅 ${h.date}</span>
         <button class="history-delete" onclick="deleteHistory(${h.id})">삭제</button>
       </div>
       ${h.location ? `<div class="history-item-location">📍 ${h.location}</div>` : ''}
@@ -469,11 +474,58 @@ async function doSearch(type) {
     const res  = await fetch(`/api/building?sigunguCd=${sigunguCd}&bjdongCd=${bjdongCd}&bun=${bun}&ji=${ji}`);
     const json = await res.json();
     if (json.error) { showErr(json.error); return; }
-    renderResult(json.data, sigungu, dong, bunji);
+    renderResult(json.data, sigungu, dong, bunji, json.elevator);
     saveRecent(sigungu, dong, bunji, json.data);
   } catch (e) {
     showErr('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
+}
+
+function calcElevRisk(elevData) {
+  if (!elevData || elevData.length === 0) return null;
+
+  let maxRisk = 0;
+  let status = '정상';
+  let detail = '';
+
+  const today = new Date();
+
+  elevData.forEach(e => {
+    let risk = 0;
+
+    // 설치 연식
+    if (e.installationDe) {
+      const installYear = parseInt(e.installationDe.slice(0, 4));
+      const age = today.getFullYear() - installYear;
+      if (age > 20) risk += 50;
+      else if (age > 15) risk += 35;
+      else if (age > 10) risk += 15;
+      else if (age > 5)  risk += 5;
+    }
+
+    // 검사 유효기간 초과 여부
+    if (e.vldtyEndDe) {
+      const endDate = new Date(
+        e.vldtyEndDe.slice(0,4) + '-' +
+        e.vldtyEndDe.slice(4,6) + '-' +
+        e.vldtyEndDe.slice(6,8)
+      );
+      const diffDays = Math.floor((endDate - today) / (1000*60*60*24));
+      if (diffDays < 0) { risk += 40; status = '검사 만료'; detail = `${Math.abs(diffDays)}일 초과`; }
+      else if (diffDays < 30) { risk += 25; status = '만료 임박'; detail = `${diffDays}일 남음`; }
+      else if (diffDays < 90) { risk += 10; }
+    }
+
+    // 판정 결과
+    if (e.jdgmentNm && e.jdgmentNm.includes('부적합')) { risk += 30; status = '부적합'; }
+
+    // 승강기 상태
+    if (e.elvtrSttsNm && e.elvtrSttsNm.includes('운행정지')) { risk += 20; status = '운행정지'; }
+
+    maxRisk = Math.max(maxRisk, Math.min(risk, 99));
+  });
+
+  return { risk: maxRisk, status, detail, count: elevData.length };
 }
 
 function calcElecRisk(age, struct, underground) {
@@ -499,7 +551,7 @@ function calcRisk(age, struct) {
   return Math.min(r, 99);
 }
 
-function renderResult(d, sigungu, dong, bunji) {
+function renderResult(d, sigungu, dong, bunji, elevData) {
   const year    = d.useAprDay ? d.useAprDay.slice(0, 4) : '미상';
   const age     = year !== '미상' ? (new Date().getFullYear() - parseInt(year)) : 0;
   const struct  = d.strctCdNm     || '미상';
@@ -523,6 +575,7 @@ function renderResult(d, sigungu, dong, bunji) {
     ? ['warn',   '주의',     '#e07b39', '중위험']
     : ['ok',     '양호',     '#50c070', '저위험'];
 
+  const elevResult = calcElevRisk(elevData);
   const { svg: pipeSvg, mat } = buildPipeDiagram(floors, year, struct);
   const matColor = mat.color;
 
@@ -566,6 +619,18 @@ function renderResult(d, sigungu, dong, bunji) {
         <div class="rrow"><span class="rlabel">동파 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#4a9ede;" data-w="${freeze}"></div></div><span class="rpct">${freeze}%</span></div>
         <div class="rrow"><span class="rlabel">누전 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#f0c040;" data-w="${elec}"></div></div><span class="rpct">${elec}%</span></div>
       </div>
+      ${elevResult ? `
+      <div class="risksec" style="border-top:1px solid var(--border2);">
+        <div class="risktitle">
+          승강기 안전 현황
+          <span class="risk-tag" style="background:${elevResult.risk>=70?'#e0505022':'#50c07022'};color:${elevResult.risk>=70?'#e05050':'#50c070'};border:1px solid ${elevResult.risk>=70?'#e0505044':'#50c07044'};">${elevResult.status}</span>
+        </div>
+        <div class="rrow"><span class="rlabel">사고 위험</span><div class="rtrack"><div class="rfill" style="width:0%;background:#c070e0;" data-w="${elevResult.risk}"></div></div><span class="rpct">${elevResult.risk}%</span></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">
+          승강기 ${elevResult.count}대 확인됨
+          ${elevResult.detail ? ` · ${elevResult.detail}` : ''}
+        </div>
+      </div>` : ''}
       <div class="detailsec">
         <div class="dtitle">건물 상세정보</div>
         <div class="drow"><span>주용도</span><span>${purpose}</span></div>
