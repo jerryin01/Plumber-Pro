@@ -4,199 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>PIPEPRO — 배관 현장 도우미</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg:      #1c1f2e;
-    --bg2:     #262a3d;
-    --bg3:     #222536;
-    --border:  #3a3f58;
-    --border2: #2e3248;
-    --text:    #f0ece0;
-    --text2:   #d4cfc4;
-    --muted:   #8890b0;
-    --accent:  #e07b39;
-    --accent2: #c96a2a;
-    --danger:  #e05050;
-    --ok:      #50c070;
-    --blue:    #4a9ede;
+    --bg: #1c1f2e; --bg2: #262a3d; --bg3: #222536;
+    --border: #3a3f58; --border2: #2e3248;
+    --text: #f0ece0; --text2: #d4cfc4; --muted: #8890b0;
+    --accent: #e07b39; --accent2: #c96a2a;
+    --danger: #e05050; --ok: #50c070; --blue: #4a9ede;
   }
-
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .app {
-    max-width: 420px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg);
-  }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; }
+  .app { max-width: 420px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
 
   /* 상단바 */
-  .topbar {
-    padding: 16px 20px 14px;
-    border-bottom: 1px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .logo {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--text);
-  }
+  .topbar { padding: 16px 20px 14px; border-bottom: 1px solid var(--border2); }
+  .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 1px; }
   .logo span { color: var(--accent); }
   .logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
   /* 본문 */
   .body { flex: 1; padding: 20px; overflow-y: auto; }
-
-  .slabel {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    margin-bottom: 8px;
-  }
+  .slabel { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
 
   /* 검색 */
   .search-wrap { margin-bottom: 20px; }
   .search-row { display: flex; gap: 8px; margin-bottom: 6px; }
   .addr-input {
-    flex: 1;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    font-size: 14px;
-    padding: 12px 14px;
-    outline: none;
-    transition: border-color .2s;
+    flex: 1; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Barlow', sans-serif;
+    font-size: 14px; padding: 12px 14px; outline: none; transition: border-color .2s;
   }
   .addr-input:focus { border-color: var(--accent); }
   .addr-input::placeholder { color: var(--border); }
-  .addr-small { max-width: 120px; flex: none; }
   .search-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    padding: 12px 18px;
-    cursor: pointer;
-    transition: background .2s;
+    background: var(--accent); border: none; border-radius: 8px; color: #fff;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600;
+    padding: 12px 18px; cursor: pointer; transition: background .2s; white-space: nowrap;
   }
   .search-btn:hover { background: var(--accent2); }
   .hint { font-size: 11px; color: var(--border); }
 
   /* 결과 카드 */
-  .bcard {
-    background: var(--bg2);
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    animation: fadeIn .3s ease;
-  }
+  .bcard { background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeIn .3s ease; margin-bottom: 16px; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; } }
-
-  .bhead {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border2);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-  }
+  .bhead { padding: 14px 16px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
   .bname { font-size: 15px; font-weight: 500; color: var(--text); }
   .baddr { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
-
   .badge { font-size: 11px; border-radius: 5px; padding: 3px 9px; white-space: nowrap; flex-shrink: 0; }
   .badge.danger { background: #2a1414; color: var(--danger); border: 1px solid #3d1818; }
   .badge.warn   { background: #2a1f14; color: var(--accent); border: 1px solid #3d2a18; }
   .badge.ok     { background: #142a18; color: var(--ok);     border: 1px solid #183d20; }
-
-  .igrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 12px 16px;
-    gap: 10px;
-    border-bottom: 1px solid var(--border2);
-  }
+  .igrid { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 12px 16px; gap: 10px; border-bottom: 1px solid var(--border2); }
   .iitem label { font-size: 10px; color: var(--muted); display: block; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
   .iitem span  { font-size: 14px; color: var(--text2); font-weight: 500; }
-
   .risksec { padding: 14px 16px; border-bottom: 1px solid var(--border2); }
-  .risktitle {
-    font-size: 10px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: .5px; margin-bottom: 12px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  .risktitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
   .risk-tag { font-size: 10px; border-radius: 4px; padding: 2px 7px; }
   .rrow { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .rlabel { font-size: 12px; color: var(--muted); width: 72px; flex-shrink: 0; }
   .rtrack { flex: 1; height: 6px; background: var(--border2); border-radius: 3px; overflow: hidden; }
   .rfill  { height: 100%; border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1); }
   .rpct   { font-size: 12px; color: var(--muted); width: 30px; text-align: right; }
-
   .detailsec { padding: 14px 16px; }
   .dtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
-  .drow {
-    display: flex; justify-content: space-between;
-    font-size: 13px; padding: 5px 0;
-    border-bottom: 1px solid var(--border2);
-  }
+  .drow { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border2); }
   .drow:last-child { border-bottom: none; }
   .drow span:first-child { color: var(--muted); }
   .drow span:last-child  { color: var(--text2); }
 
-  /* 빈화면 / 로딩 / 에러 */
-  .empty {
-    padding: 48px 20px; text-align: center;
-    color: var(--border); font-size: 13px; line-height: 2.2;
+  /* 최근 검색 */
+  .recent-wrap { margin-top: 4px; }
+  .recent-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .recent-clear { font-size: 11px; color: var(--danger); cursor: pointer; background: none; border: none; padding: 0; }
+  .recent-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 8px;
+    cursor: pointer; transition: border-color .2s;
   }
+  .recent-item:hover { border-color: var(--accent); }
+  .recent-addr { font-size: 13px; color: var(--text2); }
+  .recent-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .recent-arrow { color: var(--muted); font-size: 16px; }
+
+  /* 빈화면 / 로딩 / 에러 */
+  .empty { padding: 48px 20px; text-align: center; color: var(--border); font-size: 13px; line-height: 2.2; }
   .empty svg { width: 36px; height: 36px; stroke: var(--border); display: block; margin: 0 auto 16px; }
   .loading { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
-  .spinner {
-    display: inline-block; width: 18px; height: 18px;
-    border: 2px solid var(--border); border-top-color: var(--accent);
-    border-radius: 50%; animation: spin .8s linear infinite;
-    margin-right: 10px; vertical-align: middle;
-  }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin-right: 10px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .errmsg {
-    padding: 14px; text-align: center; font-size: 13px;
-    color: var(--danger); background: #2a1414;
-    border: 1px solid #3d1818; border-radius: 8px;
-  }
+  .errmsg { padding: 14px; text-align: center; font-size: 13px; color: var(--danger); background: #2a1414; border: 1px solid #3d1818; border-radius: 8px; }
 
   /* 하단 네비 */
-  .bnav {
-    background: #151825;
-    border-top: 1px solid var(--border2);
-    display: flex; justify-content: space-around;
-    padding: 12px 0 max(16px, env(safe-area-inset-bottom));
-    flex-shrink: 0;
-  }
-  .nitem {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 4px; cursor: pointer; padding: 0 16px;
-    -webkit-tap-highlight-color: transparent;
-  }
+  .bnav { background: #151825; border-top: 1px solid var(--border2); display: flex; justify-content: space-around; padding: 12px 0 max(16px, env(safe-area-inset-bottom)); flex-shrink: 0; }
+  .nitem { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 0 16px; }
   .nitem svg { width: 22px; height: 22px; }
   .nlabel { font-size: 10px; color: var(--border); }
   .nitem.active .nlabel { color: var(--accent); }
@@ -204,30 +106,33 @@
 </head>
 <body>
 <div class="app">
-
   <div class="topbar">
-    <div>
-      <div class="logo">PIPE<span>PRO</span></div>
-      <div class="logo-sub">배관 현장 도우미</div>
-    </div>
+    <div class="logo">PIPE<span>PRO</span></div>
+    <div class="logo-sub">배관 현장 도우미</div>
   </div>
 
   <div class="body">
     <div class="search-wrap">
       <div class="slabel">건물 주소 검색</div>
       <div class="search-row">
-        <input class="addr-input addr-small" id="sigungu" placeholder="시군구 (예: 마포구)" />
-        <input class="addr-input" id="bjdong" placeholder="번지 (예: 128 또는 128-3)" />
+        <input class="addr-input" id="sigungu" placeholder="시군구 (예: 고양시 일산동구)" style="flex:1.2" />
+        <input class="addr-input" id="dong" placeholder="법정동 (예: 사리현동)" />
+      </div>
+      <div class="search-row">
+        <input class="addr-input" id="bunji" placeholder="번지 (예: 196-4)" />
         <button class="search-btn" onclick="doSearch()">조회</button>
       </div>
-      <div class="hint">* 시군구명과 번지를 입력하세요</div>
+      <div class="hint">* 시군구 / 법정동 / 번지를 입력하세요</div>
     </div>
 
-    <div id="result">
-      <div class="empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        주소를 입력하면<br>실제 건물 정보와<br>배관 위험 분석이 표시됩니다
+    <div id="result"></div>
+
+    <div class="recent-wrap" id="recent-wrap" style="display:none;">
+      <div class="recent-title">
+        <span>최근 검색</span>
+        <button class="recent-clear" onclick="clearRecent()">전체 삭제</button>
       </div>
+      <div id="recent-list"></div>
     </div>
   </div>
 
@@ -252,49 +157,129 @@
 </div>
 
 <script>
+// 시군구 → 시군구코드 매핑
 const SIGUNGU_MAP = {
   '종로구':'11110','중구':'11140','용산구':'11170','성동구':'11200','광진구':'11215',
   '동대문구':'11230','중랑구':'11260','성북구':'11290','강북구':'11305','도봉구':'11320',
   '노원구':'11350','은평구':'11380','서대문구':'11410','마포구':'11440','양천구':'11470',
   '강서구':'11500','구로구':'11530','금천구':'11545','영등포구':'11560','동작구':'11590',
   '관악구':'11620','서초구':'11650','강남구':'11680','송파구':'11710','강동구':'11740',
+  '고양시 일산동구':'41285','고양시 일산서구':'41287','고양시 덕양구':'41281',
   '수원시':'41110','성남시':'41130','안양시':'41170','부천시':'41190','광명시':'41210',
-  '평택시':'41220','고양시':'41280','덕양구':'41281','일산동구':'41285','일산서구':'41287',
-  '용인시':'41460','파주시':'41480','화성시':'41590','남양주시':'41360','구리시':'41310',
+  '평택시':'41220','파주시':'41480','화성시':'41590','남양주시':'41360','구리시':'41310',
   '의정부시':'41150','하남시':'41450','시흥시':'41390','군포시':'41410','오산시':'41370',
   '이천시':'41500','안성시':'41550','김포시':'41570','광주시':'41610','양주시':'41630',
-  '부산진구':'26230','해운대구':'26350','사하구':'26380','금정구':'26410','연제구':'26470',
-  '달서구':'27290','수성구':'27260','북구':'27230',
-  '남동구':'28200','부평구':'28237','계양구':'28245','미추홀구':'28177','연수구':'28185',
-  '유성구':'30200','대덕구':'30230','중구':'30140',
-  '제주시':'50110','서귀포시':'50130',
+  '용인시 처인구':'41461','용인시 기흥구':'41463','용인시 수지구':'41465',
 };
+
+// 법정동 → 법정동코드 매핑 (자주 쓰는 것들)
+const DONG_MAP = {
+  // 고양시 일산동구
+  '사리현동':'10900','식사동':'10100','장항동':'10700','마두동':'10200',
+  '백석동':'10300','중산동':'10400','정발산동':'10500','풍동':'10600',
+  '산황동':'10800','성석동':'11000','설문동':'11100','문봉동':'11200','지영동':'11300',
+  // 서울 마포구
+  '공덕동':'10100','아현동':'10200','도화동':'10300','용강동':'10400','대흥동':'10500',
+  '염리동':'10600','신수동':'10700','서교동':'10800','합정동':'10900','망원동':'11000',
+  '연남동':'11100','성산동':'11200','상암동':'11300',
+  // 서울 강남구
+  '신사동':'10100','논현동':'10200','압구정동':'10300','청담동':'10400','삼성동':'10500',
+  '대치동':'10600','역삼동':'10700','도곡동':'10800','개포동':'10900','일원동':'11000',
+  '수서동':'11100','세곡동':'11200',
+};
+
+// 최근 검색 불러오기
+let recentList = JSON.parse(localStorage.getItem('pipepro_recent') || '[]');
+
+function saveRecent(sigungu, dong, bunji, result) {
+  const item = {
+    sigungu, dong, bunji,
+    bldName: result.bldNm || '',
+    addr: result.platPlc || `${sigungu} ${dong} ${bunji}`,
+    time: new Date().toLocaleDateString('ko-KR')
+  };
+  recentList = recentList.filter(r => r.addr !== item.addr);
+  recentList.unshift(item);
+  if (recentList.length > 10) recentList.pop();
+  localStorage.setItem('pipepro_recent', JSON.stringify(recentList));
+  renderRecent();
+}
+
+function renderRecent() {
+  const wrap = document.getElementById('recent-wrap');
+  const list = document.getElementById('recent-list');
+  if (recentList.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = recentList.map((r, i) => `
+    <div class="recent-item" onclick="searchFromRecent(${i})">
+      <div>
+        <div class="recent-addr">${r.bldName || r.addr}</div>
+        <div class="recent-sub">${r.addr} · ${r.time}</div>
+      </div>
+      <span class="recent-arrow">›</span>
+    </div>
+  `).join('');
+}
+
+function searchFromRecent(i) {
+  const r = recentList[i];
+  document.getElementById('sigungu').value = r.sigungu;
+  document.getElementById('dong').value = r.dong;
+  document.getElementById('bunji').value = r.bunji;
+  doSearch();
+}
+
+function clearRecent() {
+  recentList = [];
+  localStorage.removeItem('pipepro_recent');
+  renderRecent();
+}
+
+// 법정동코드 찾기
+function findBjdongCd(sigungu, dong) {
+  // DONG_MAP에서 먼저 찾기
+  if (DONG_MAP[dong]) return DONG_MAP[dong].padStart(5, '0');
+  // 없으면 null 반환
+  return null;
+}
 
 async function doSearch() {
   const sigungu = document.getElementById('sigungu').value.trim();
-  const bjdong  = document.getElementById('bjdong').value.trim();
+  const dong    = document.getElementById('dong').value.trim();
+  const bunji   = document.getElementById('bunji').value.trim();
 
-  if (!sigungu || !bjdong) { showErr('시군구명과 번지를 모두 입력하세요'); return; }
+  if (!sigungu || !dong || !bunji) {
+    showErr('시군구, 법정동, 번지를 모두 입력하세요');
+    return;
+  }
 
-  const code = SIGUNGU_MAP[sigungu];
-  if (!code) { showErr(`"${sigungu}"을(를) 찾을 수 없습니다.\n예: 마포구, 일산동구, 강남구`); return; }
+  // 시군구코드 찾기
+  let sigunguCd = null;
+  for (const [key, val] of Object.entries(SIGUNGU_MAP)) {
+    if (sigungu.includes(key) || key.includes(sigungu)) {
+      sigunguCd = val; break;
+    }
+  }
+  if (!sigunguCd) { showErr(`"${sigungu}" 시군구를 찾을 수 없습니다`); return; }
+
+  // 법정동코드 찾기
+  const bjdongCd = findBjdongCd(sigungu, dong);
+  if (!bjdongCd) { showErr(`"${dong}" 법정동 코드를 찾을 수 없습니다.\n지속적으로 오류가 나면 개발자에게 문의해주세요.`); return; }
+
+  const parts = bunji.split('-');
+  const bun = (parts[0] || '0').padStart(4, '0');
+  const ji  = (parts[1] || '0').padStart(4, '0');
 
   showLoading();
 
   try {
-    const parts = bjdong.split('-');
-    const bun = (parts[0] || '0').padStart(4, '0');
-    const ji  = (parts[1] || '0').padStart(4, '0');
-    const bjdongCd = code.slice(2).padStart(5, '0');
-
-    const res  = await fetch(`/api/building?sigunguCd=${code}&bjdongCd=${bjdongCd}&bun=${bun}&ji=${ji}`);
+    const res  = await fetch(`/api/building?sigunguCd=${sigunguCd}&bjdongCd=${bjdongCd}&bun=${bun}&ji=${ji}`);
     const json = await res.json();
-
     if (json.error) { showErr(json.error); return; }
-    renderResult(json.data, sigungu, bjdong);
-
+    renderResult(json.data, sigungu, dong, bunji);
+    saveRecent(sigungu, dong, bunji, json.data);
   } catch (e) {
-    showErr('서버 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.');
+    showErr('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
 
@@ -309,13 +294,14 @@ function calcRisk(age, struct) {
   return Math.min(r, 99);
 }
 
-function renderResult(d, sigungu, bjdong) {
+function renderResult(d, sigungu, dong, bunji) {
   const year    = d.useAprDay ? d.useAprDay.slice(0, 4) : '미상';
   const age     = year !== '미상' ? (new Date().getFullYear() - parseInt(year)) : 0;
   const struct  = d.strctCdNm     || '미상';
   const floors  = (d.grndFlrCnt   || '-') + '층';
   const purpose = d.mainPurpsCdNm || '미상';
-  const addr    = d.platPlc       || `${sigungu} ${bjdong}`;
+  const addr    = d.platPlc       || `${sigungu} ${dong} ${bunji}`;
+  const bldName = d.bldNm         || '';
 
   const risk   = calcRisk(age, struct);
   const leak   = risk;
@@ -332,7 +318,8 @@ function renderResult(d, sigungu, bjdong) {
     <div class="bcard">
       <div class="bhead">
         <div>
-          <div class="bname">${addr}</div>
+          <div class="bname">${bldName || addr}</div>
+          <div class="baddr">${addr}</div>
           <div class="baddr">${purpose} · 준공 ${year}년 · ${age}년 경과</div>
         </div>
         <div class="badge ${bc}">${bt}</div>
@@ -377,9 +364,12 @@ function showErr(msg) {
     `<div class="errmsg">${msg.replace(/\n/g, '<br>')}</div>`;
 }
 
-document.getElementById('bjdong').addEventListener('keydown', e => {
+document.getElementById('bunji').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
+
+// 초기 최근 검색 렌더링
+renderRecent();
 </script>
 </body>
 </html>
