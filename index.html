@@ -142,7 +142,7 @@
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="logo">PIPE<span>PRO</span></div>
+    <div class="logo" onclick="resetApp()" style="cursor:pointer;">PIPE<span>PRO</span></div>
     <div class="logo-sub">배관 현장 도우미</div>
   </div>
 
@@ -891,6 +891,17 @@ function renderResult(d, sigungu, dong, bunji, elevData) {
     });
   });
   setTimeout(renderHistory, 100);
+}
+
+function resetApp() {
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('sigungu').value = '';
+  document.getElementById('dong').value = '';
+  document.getElementById('bunji').value = '';
+  document.getElementById('road-addr').value = '';
+  document.getElementById('road-sigungu').value = '';
+  switchTab('jibun');
+  renderRecent();
 }
 
 function showLoading() {
