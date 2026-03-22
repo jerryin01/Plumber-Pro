@@ -1,50 +1,40 @@
-import https from 'https';
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const { sigunguCd, bjdongCd, bun, ji } = req.query;
+
   if (!sigunguCd || !bjdongCd || !bun) {
-    return res.status(400).json({ error: '필수 파라미터 없음' });
+    return res.status(400).json({ error: '필수 파라미터가 없습니다.' });
   }
 
   const KEY = process.env.PUBLIC_DATA_API_KEY;
-  if (!KEY) return res.status(500).json({ error: 'API 키 없음' });
-
-  const apiUrl = `https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo`
-    + `?serviceKey=${KEY}`
-    + `&sigunguCd=${sigunguCd}`
-    + `&bjdongCd=${bjdongCd}`
-    + `&platGbCd=0`
-    + `&bun=${bun}`
-    + `&ji=${ji || '0000'}`
-    + `&numOfRows=1&pageNo=1&_type=json`;
+  if (!KEY) {
+    return res.status(500).json({ error: '서버 설정 오류' });
+  }
 
   try {
-    const data = await new Promise((resolve, reject) => {
-      https.get(apiUrl, (response) => {
-        let body = '';
-        response.on('data', (chunk) => { body += chunk; });
-        response.on('end', () => {
-          try { resolve(JSON.parse(body)); }
-          catch (e) { reject(new Error('파싱오류:' + body.slice(0, 300))); }
-        });
-      }).on('error', reject);
-    });
+    const url = `https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo`
+      + `?serviceKey=${encodeURIComponent(KEY)}`
+      + `&sigunguCd=${sigunguCd}`
+      + `&bjdongCd=${bjdongCd}`
+      + `&platGbCd=0`
+      + `&bun=${bun}`
+      + `&ji=${ji || '0000'}`
+      + `&numOfRows=1&pageNo=1&_type=json`;
 
+    const response = await fetch(url);
+    const data = await response.json();
     const items = data?.response?.body?.items?.item;
+
     if (!items) {
-      return res.status(404).json({
-        error: '데이터 없음',
-        debug: JSON.stringify(data?.response?.body || data).slice(0, 300)
-      });
+      return res.status(404).json({ error: '데이터를 찾을 수 없습니다.' });
     }
 
-    return res.status(200).json({ data: Array.isArray(items) ? items[0] : items });
+    const item = Array.isArray(items) ? items[0] : items;
+    return res.status(200).json({ data: item });
 
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: 'API 호출 실패' });
   }
 }
