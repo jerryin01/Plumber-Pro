@@ -103,9 +103,13 @@ export default async function handler(req, res) {
         if (raw) elevList = Array.isArray(raw) ? raw : [raw];
       }
 
+      // raw 응답 앞부분 디버그용 저장
+      const _rawPreview = listText.slice(0, 500);
+
       // 주소 필터링
       const filtered = elevList.filter(e => e.address1 && (e.address1.includes(dongName) || e.address1.includes(bunjiNum)));
       elevData = filtered.length > 0 ? filtered : elevList.slice(0, 5);
+      if (elevData.length === 0) elevData = [{ _debug: '목록 없음', _raw: _rawPreview, sido, sigungu }];
 
       // 검사이력 조회 (첫 번째 승강기)
       if (elevData.length > 0 && elevData[0].elevator_no) {
@@ -132,9 +136,10 @@ export default async function handler(req, res) {
 
     } catch (e) {
       // 승강기 실패해도 건물 데이터는 정상 반환
-      elevData = null;
+      elevData = { _error: e.message };
     }
   }
 
   return res.status(200).json({ data: buildingData, elevator: elevData });
 }
+
