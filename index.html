@@ -273,7 +273,7 @@ async function doSearch() {
   showLoading();
 
   try {
-    const res  = await fetch(`/api/building?sigunguCd=${sigunguCd}&bjdongCd=${bjdongCd}&bun=${bun}&ji=${ji}`);
+    const res = await fetch(`https://kplumber-pro.vercel.app/api/building?...`);
     const json = await res.json();
     if (json.error) { showErr(json.error); return; }
     renderResult(json.data, sigungu, dong, bunji);
