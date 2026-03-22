@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       const bunjiNum = parts[parts.length - 1] || '';
 
       // 승강기 목록 조회
-      const listUrl = 'https://apis.data.go.kr/B553664/BuldElevatorService/getElevatorListM'
+      const listUrl = 'https://apis.data.go.kr/B553664/BuldElevatorService/getBuldElvtrList'
         + '?serviceKey=' + ELEV_KEY
         + '&sido=' + encodeURIComponent(sido)
         + '&sigungu=' + encodeURIComponent(sigungu)
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
 
       // 검사이력 조회 (첫 번째 승강기)
       if (elevData.length > 0 && elevData[0].elevator_no) {
-        const inspUrl = 'https://apis.data.go.kr/B553664/BuldElevatorService/getElvtrInspctInqireM'
+        const inspUrl = 'https://apis.data.go.kr/B553664/BuldElevatorService/getElvtrInspctInqire'
           + '?serviceKey=' + ELEV_KEY
           + '&elevator_no=' + elevData[0].elevator_no
           + '&pageNo=1&numOfRows=5';
@@ -142,4 +142,3 @@ export default async function handler(req, res) {
 
   return res.status(200).json({ data: buildingData, elevator: elevData });
 }
-
