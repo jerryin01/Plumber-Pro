@@ -76,7 +76,7 @@ export default async function handler(req, res) {
       const sigungu = addrParts[1] || '';
 
       // 1단계: 승강기 목록 조회 (sido + sigungu로)
-      const listUrl = `https://apis.data.go.kr/1611000/ElevatorService/getElevatorListM`
+      const listUrl = `https://apis.data.go.kr/B553664/BuldElevatorService/getElevatorListM`
         + `?serviceKey=${ELEV_KEY}`
         + `&sido=${encodeURIComponent(sido)}`
         + `&sigungu=${encodeURIComponent(sigungu)}`
@@ -126,7 +126,7 @@ export default async function handler(req, res) {
 
       // 2단계: 검사이력 조회 (첫 번째 승강기의 상세정보)
       if (elevData && elevData.length > 0 && elevData[0].elevator_no) {
-        const inspUrl = `https://apis.data.go.kr/1611000/ElevatorService/getElvtrInspctInqireM`
+        const inspUrl = `https://apis.data.go.kr/B553664/BuldElevatorService/getElvtrInspctInqireM`
           + `?serviceKey=${ELEV_KEY}`
           + `&elevator_no=${elevData[0].elevator_no}`
           + `&pageNo=1&numOfRows=5`;
@@ -154,7 +154,7 @@ export default async function handler(req, res) {
 
     } catch (e) {
       // 승강기 API 실패해도 건물 데이터는 정상 반환
-      elevData = null;
+      elevData = { _error: e.message };
     }
   }
 
