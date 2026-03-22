@@ -273,7 +273,7 @@ async function doSearch() {
   showLoading();
 
   try {
-    const res = await fetch(`https://kplumber-pro.vercel.app/api/building?...`);
+    const res = await fetch(`https://kplumber-pro.vercel.app/https://kplumber-pro.vercel.app/api/building?...`);
     const json = await res.json();
     if (json.error) { showErr(json.error); return; }
     renderResult(json.data, sigungu, dong, bunji);
