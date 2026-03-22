@@ -4,103 +4,118 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>PIPEPRO — 배관 현장 도우미</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #1c1f2e; --bg2: #262a3d; --bg3: #222536;
     --border: #3a3f58; --border2: #2e3248;
-    --text: #f0ece0; --text2: #d4cfc4; --muted: #8890b0;
+    --text: #f5f0e8; --text2: #ddd8cc; --muted: #9aa0bc;
     --accent: #e07b39; --accent2: #c96a2a;
     --danger: #e05050; --ok: #50c070; --blue: #4a9ede;
   }
-  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; font-size: 16px; -webkit-font-smoothing: antialiased; }
   .app { max-width: 420px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
 
   /* 상단바 */
   .topbar { padding: 16px 20px 14px; border-bottom: 1px solid var(--border2); }
-  .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+  .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 1px; }
   .logo span { color: var(--accent); }
-  .logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .logo-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
   /* 본문 */
   .body { flex: 1; padding: 20px; overflow-y: auto; }
-  .slabel { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+  .slabel { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; font-weight: 600; }
 
-  /* 검색 */
+  /* 검색 탭 */
+  .tab-wrap { display: flex; gap: 0; margin-bottom: 14px; background: var(--bg2); border-radius: 8px; padding: 4px; }
+  .tab-btn { flex: 1; padding: 8px; font-size: 14px; font-weight: 600; font-family: 'Barlow', sans-serif; border: none; border-radius: 6px; cursor: pointer; transition: all .2s; background: transparent; color: var(--muted); }
+  .tab-btn.active { background: var(--accent); color: #fff; }
+
+  /* 검색 입력 */
   .search-wrap { margin-bottom: 20px; }
-  .search-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .search-panel { display: none; }
+  .search-panel.active { display: block; }
+  .search-row { display: flex; gap: 8px; margin-bottom: 8px; }
   .addr-input {
     flex: 1; background: var(--bg2); border: 1px solid var(--border);
     border-radius: 8px; color: var(--text); font-family: 'Barlow', sans-serif;
-    font-size: 14px; padding: 12px 14px; outline: none; transition: border-color .2s;
+    font-size: 15px; padding: 13px 14px; outline: none; transition: border-color .2s;
+    font-weight: 500;
   }
   .addr-input:focus { border-color: var(--accent); }
-  .addr-input::placeholder { color: var(--border); }
+  .addr-input::placeholder { color: #4a5070; font-weight: 400; }
   .search-btn {
     background: var(--accent); border: none; border-radius: 8px; color: #fff;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600;
-    padding: 12px 18px; cursor: pointer; transition: background .2s; white-space: nowrap;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700;
+    padding: 13px 20px; cursor: pointer; transition: background .2s; white-space: nowrap;
   }
   .search-btn:hover { background: var(--accent2); }
-  .hint { font-size: 11px; color: var(--border); }
+  .hint { font-size: 12px; color: #4a5070; margin-top: 4px; }
 
   /* 결과 카드 */
   .bcard { background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeIn .3s ease; margin-bottom: 16px; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; } }
   .bhead { padding: 14px 16px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .bname { font-size: 15px; font-weight: 500; color: var(--text); }
-  .baddr { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
-  .badge { font-size: 11px; border-radius: 5px; padding: 3px 9px; white-space: nowrap; flex-shrink: 0; }
+  .bname { font-size: 17px; font-weight: 600; color: var(--text); }
+  .baddr { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .badge { font-size: 12px; font-weight: 600; border-radius: 5px; padding: 4px 10px; white-space: nowrap; flex-shrink: 0; }
   .badge.danger { background: #2a1414; color: var(--danger); border: 1px solid #3d1818; }
   .badge.warn   { background: #2a1f14; color: var(--accent); border: 1px solid #3d2a18; }
   .badge.ok     { background: #142a18; color: var(--ok);     border: 1px solid #183d20; }
+
   .igrid { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 12px 16px; gap: 10px; border-bottom: 1px solid var(--border2); }
-  .iitem label { font-size: 10px; color: var(--muted); display: block; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
-  .iitem span  { font-size: 14px; color: var(--text2); font-weight: 500; }
+  .iitem label { font-size: 11px; color: var(--muted); display: block; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; font-weight: 600; }
+  .iitem span  { font-size: 15px; color: var(--text2); font-weight: 600; }
+
   .risksec { padding: 14px 16px; border-bottom: 1px solid var(--border2); }
-  .risktitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .risk-tag { font-size: 10px; border-radius: 4px; padding: 2px 7px; }
+  .risktitle { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .risk-tag { font-size: 11px; border-radius: 4px; padding: 3px 8px; font-weight: 600; }
   .rrow { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .rlabel { font-size: 12px; color: var(--muted); width: 72px; flex-shrink: 0; }
+  .rlabel { font-size: 13px; color: var(--muted); width: 72px; flex-shrink: 0; font-weight: 500; }
   .rtrack { flex: 1; height: 6px; background: var(--border2); border-radius: 3px; overflow: hidden; }
   .rfill  { height: 100%; border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1); }
-  .rpct   { font-size: 12px; color: var(--muted); width: 30px; text-align: right; }
+  .rpct   { font-size: 13px; color: var(--muted); width: 32px; text-align: right; font-weight: 600; }
+
+  /* 배관 구조도 */
+  .pipesec { padding: 14px 16px; border-bottom: 1px solid var(--border2); }
+  .pipetitle { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .pipe-material { font-size: 12px; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+  .pipe-diagram { width: 100%; }
+  .pipe-legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
   .detailsec { padding: 14px 16px; }
-  .dtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
-  .drow { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border2); }
+  .dtitle { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; font-weight: 600; }
+  .drow { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--border2); }
   .drow:last-child { border-bottom: none; }
   .drow span:first-child { color: var(--muted); }
-  .drow span:last-child  { color: var(--text2); }
+  .drow span:last-child  { color: var(--text2); font-weight: 600; }
 
   /* 최근 검색 */
   .recent-wrap { margin-top: 4px; }
-  .recent-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .recent-clear { font-size: 11px; color: var(--danger); cursor: pointer; background: none; border: none; padding: 0; }
-  .recent-item {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 10px 14px; margin-bottom: 8px;
-    cursor: pointer; transition: border-color .2s;
-  }
+  .recent-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .recent-clear { font-size: 12px; color: var(--danger); cursor: pointer; background: none; border: none; padding: 0; font-weight: 600; }
+  .recent-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; cursor: pointer; transition: border-color .2s; }
   .recent-item:hover { border-color: var(--accent); }
-  .recent-addr { font-size: 13px; color: var(--text2); }
-  .recent-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .recent-arrow { color: var(--muted); font-size: 16px; }
+  .recent-addr { font-size: 14px; color: var(--text2); font-weight: 600; }
+  .recent-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .recent-arrow { color: var(--muted); font-size: 18px; }
 
   /* 빈화면 / 로딩 / 에러 */
-  .empty { padding: 48px 20px; text-align: center; color: var(--border); font-size: 13px; line-height: 2.2; }
+  .empty { padding: 48px 20px; text-align: center; color: var(--border); font-size: 14px; line-height: 2.2; }
   .empty svg { width: 36px; height: 36px; stroke: var(--border); display: block; margin: 0 auto 16px; }
-  .loading { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .loading { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin-right: 10px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .errmsg { padding: 14px; text-align: center; font-size: 13px; color: var(--danger); background: #2a1414; border: 1px solid #3d1818; border-radius: 8px; }
+  .errmsg { padding: 14px; text-align: center; font-size: 14px; color: var(--danger); background: #2a1414; border: 1px solid #3d1818; border-radius: 8px; font-weight: 500; }
 
   /* 하단 네비 */
   .bnav { background: #151825; border-top: 1px solid var(--border2); display: flex; justify-content: space-around; padding: 12px 0 max(16px, env(safe-area-inset-bottom)); flex-shrink: 0; }
   .nitem { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 0 16px; }
   .nitem svg { width: 22px; height: 22px; }
-  .nlabel { font-size: 10px; color: var(--border); }
+  .nlabel { font-size: 11px; color: var(--border); font-weight: 600; }
   .nitem.active .nlabel { color: var(--accent); }
 </style>
 </head>
@@ -114,15 +129,36 @@
   <div class="body">
     <div class="search-wrap">
       <div class="slabel">건물 주소 검색</div>
-      <div class="search-row">
-        <input class="addr-input" id="sigungu" placeholder="시군구 (예: 고양시 일산동구)" style="flex:1.2" />
-        <input class="addr-input" id="dong" placeholder="법정동 (예: 사리현동)" />
+
+      <!-- 탭 -->
+      <div class="tab-wrap">
+        <button class="tab-btn active" onclick="switchTab('jibun')">지번 주소</button>
+        <button class="tab-btn" onclick="switchTab('road')">도로명 주소</button>
       </div>
-      <div class="search-row">
-        <input class="addr-input" id="bunji" placeholder="번지 (예: 196-4)" />
-        <button class="search-btn" onclick="doSearch()">조회</button>
+
+      <!-- 지번 주소 -->
+      <div class="search-panel active" id="panel-jibun">
+        <div class="search-row">
+          <input class="addr-input" id="sigungu" placeholder="시군구  예) 중구" style="flex:1" />
+          <input class="addr-input" id="dong" placeholder="법정동  예) 태평로1가" style="flex:1.2" />
+        </div>
+        <div class="search-row">
+          <input class="addr-input" id="bunji" placeholder="번지  예) 31" />
+          <button class="search-btn" onclick="doSearch('jibun')">조회</button>
+        </div>
       </div>
-      <div class="hint">* 시군구 / 법정동 / 번지를 입력하세요</div>
+
+      <!-- 도로명 주소 -->
+      <div class="search-panel" id="panel-road">
+        <div class="search-row">
+          <input class="addr-input" id="road-addr" placeholder="도로명 주소  예) 태평로1길 31" />
+        </div>
+        <div class="search-row">
+          <input class="addr-input" id="road-sigungu" placeholder="시군구  예) 중구" style="flex:0.8" />
+          <button class="search-btn" onclick="doSearch('road')">조회</button>
+        </div>
+        <div class="hint">* 시군구 + 도로명 주소를 입력하세요</div>
+      </div>
     </div>
 
     <div id="result"></div>
@@ -157,7 +193,14 @@
 </div>
 
 <script>
-// 시군구 → 시군구코드 매핑
+function switchTab(type) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && type==='jibun') || (i===1 && type==='road'));
+  });
+  document.getElementById('panel-jibun').classList.toggle('active', type==='jibun');
+  document.getElementById('panel-road').classList.toggle('active', type==='road');
+}
+
 const SIGUNGU_MAP = {
   '종로구':'11110','중구':'11140','용산구':'11170','성동구':'11200','광진구':'11215',
   '동대문구':'11230','중랑구':'11260','성북구':'11290','강북구':'11305','도봉구':'11320',
@@ -172,8 +215,15 @@ const SIGUNGU_MAP = {
   '용인시 처인구':'41461','용인시 기흥구':'41463','용인시 수지구':'41465',
 };
 
-// 법정동 → 법정동코드 매핑 (자주 쓰는 것들)
 const DONG_MAP = {
+  // 서울 중구
+  '태평로1가':'10100','태평로2가':'10200','남대문로1가':'10300','남대문로2가':'10400',
+  '남대문로3가':'10500','남대문로4가':'10600','남대문로5가':'10700','소공동':'10800',
+  '회현동1가':'10900','명동1가':'11100','명동2가':'11200','충무로1가':'11300',
+  '충무로2가':'11400','을지로1가':'11500','을지로2가':'11600','을지로3가':'11700',
+  '을지로4가':'11800','을지로5가':'11900','을지로6가':'12000','을지로7가':'12100',
+  '신당동':'12200','황학동':'12300','중림동':'12400','의주로1가':'12500',
+  '의주로2가':'12600','순화동':'12700','봉래동1가':'12800','봉래동2가':'12900',
   // 고양시 일산동구
   '사리현동':'10900','식사동':'10100','장항동':'10700','마두동':'10200',
   '백석동':'10300','중산동':'10400','정발산동':'10500','풍동':'10600',
@@ -185,10 +235,8 @@ const DONG_MAP = {
   // 서울 강남구
   '신사동':'10100','논현동':'10200','압구정동':'10300','청담동':'10400','삼성동':'10500',
   '대치동':'10600','역삼동':'10700','도곡동':'10800','개포동':'10900','일원동':'11000',
-  '수서동':'11100','세곡동':'11200',
 };
 
-// 최근 검색 불러오기
 let recentList = JSON.parse(localStorage.getItem('pipepro_recent') || '[]');
 
 function saveRecent(sigungu, dong, bunji, result) {
@@ -226,7 +274,8 @@ function searchFromRecent(i) {
   document.getElementById('sigungu').value = r.sigungu;
   document.getElementById('dong').value = r.dong;
   document.getElementById('bunji').value = r.bunji;
-  doSearch();
+  switchTab('jibun');
+  doSearch('jibun');
 }
 
 function clearRecent() {
@@ -235,36 +284,99 @@ function clearRecent() {
   renderRecent();
 }
 
-// 법정동코드 찾기
-function findBjdongCd(sigungu, dong) {
-  // DONG_MAP에서 먼저 찾기
-  if (DONG_MAP[dong]) return DONG_MAP[dong].padStart(5, '0');
-  // 없으면 null 반환
-  return null;
+// 배관 자재 추정
+function getPipeMaterial(year) {
+  if (!year || year === '미상') return { name: '미상', color: '#888', desc: '확인 필요' };
+  const y = parseInt(year);
+  if (y < 1980) return { name: '아연도금강관', color: '#e05050', desc: '부식 심함 · 즉시 점검 권장' };
+  if (y < 1990) return { name: '백강관', color: '#e07b39', desc: '스케일 누적 · 점검 필요' };
+  if (y < 2000) return { name: 'PVC / 동관', color: '#e0c039', desc: '부분 노후 · 주의 필요' };
+  if (y < 2010) return { name: 'PB관 / 동관', color: '#50c070', desc: '양호 · 정기 점검 권장' };
+  return { name: 'PB관 / 스테인리스', color: '#4a9ede', desc: '양호 · 최신 자재' };
 }
 
-async function doSearch() {
-  const sigungu = document.getElementById('sigungu').value.trim();
-  const dong    = document.getElementById('dong').value.trim();
-  const bunji   = document.getElementById('bunji').value.trim();
+// 배관 구조도 SVG 생성
+function buildPipeDiagram(floors, year, struct) {
+  const mat = getPipeMaterial(year);
+  const floorCount = parseInt(floors) || 3;
+  const underground = struct && struct.includes('지하') ? 1 : 0;
+  const h = 160;
+  const w = 280;
+  const floorH = Math.min(30, (h - 40) / (floorCount + 1));
 
-  if (!sigungu || !dong || !bunji) {
-    showErr('시군구, 법정동, 번지를 모두 입력하세요');
-    return;
+  let svg = `<svg class="pipe-diagram" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // 배경
+  svg += `<rect width="${w}" height="${h}" fill="#1a1d2a" rx="8"/>`;
+
+  // 메인 수직 배관 (왼쪽)
+  const mainX = 50;
+  const topY = 20;
+  const bottomY = h - 20;
+  svg += `<line x1="${mainX}" y1="${topY}" x2="${mainX}" y2="${bottomY}" stroke="${mat.color}" stroke-width="4" stroke-linecap="round"/>`;
+
+  // 각 층 수평 배관
+  for (let i = 0; i <= floorCount; i++) {
+    const y = topY + (i * (bottomY - topY) / floorCount);
+    const floorLabel = floorCount - i === 0 ? 'B1' : `${floorCount - i}F`;
+    const isRisk = i === floorCount - 1 || i === 1;
+
+    // 수평 배관
+    svg += `<line x1="${mainX}" y1="${y}" x2="${w - 40}" y2="${y}" stroke="${isRisk ? '#e05050' : mat.color}" stroke-width="2.5" stroke-dasharray="${isRisk ? '6,3' : 'none'}"/>`;
+
+    // 층 라벨
+    svg += `<text x="18" y="${y + 4}" font-size="10" fill="#8890b0" font-family="sans-serif" font-weight="600">${floorLabel}</text>`;
+
+    // 엔드 캡
+    svg += `<circle cx="${w - 40}" cy="${y}" r="4" fill="${isRisk ? '#e05050' : mat.color}"/>`;
+
+    // 위험 표시
+    if (isRisk) {
+      svg += `<text x="${w - 30}" y="${y + 4}" font-size="10" fill="#e05050" font-family="sans-serif">!</text>`;
+    }
   }
 
-  // 시군구코드 찾기
+  // 지하 배관 (수도 인입)
+  svg += `<line x1="${mainX}" y1="${bottomY}" x2="${mainX}" y2="${bottomY}" stroke="#4a9ede" stroke-width="6" stroke-linecap="round"/>`;
+  svg += `<text x="${mainX + 8}" y="${bottomY + 4}" font-size="10" fill="#4a9ede" font-family="sans-serif" font-weight="600">수도 인입</text>`;
+
+  // 메인 밸브
+  svg += `<rect x="${mainX - 8}" y="${topY + 10}" width="16" height="10" rx="2" fill="#2e3248" stroke="${mat.color}" stroke-width="1.5"/>`;
+  svg += `<text x="${mainX + 10}" y="${topY + 18}" font-size="9" fill="${mat.color}" font-family="sans-serif">MV</text>`;
+
+  svg += `</svg>`;
+  return { svg, mat };
+}
+
+async function doSearch(type) {
+  let sigungu, dong, bunji;
+
+  if (type === 'jibun') {
+    sigungu = document.getElementById('sigungu').value.trim();
+    dong    = document.getElementById('dong').value.trim();
+    bunji   = document.getElementById('bunji').value.trim();
+    if (!sigungu || !dong || !bunji) { showErr('시군구, 법정동, 번지를 모두 입력하세요'); return; }
+  } else {
+    sigungu = document.getElementById('road-sigungu').value.trim();
+    const roadAddr = document.getElementById('road-addr').value.trim();
+    if (!sigungu || !roadAddr) { showErr('시군구와 도로명 주소를 입력하세요'); return; }
+    dong = roadAddr;
+    bunji = '';
+  }
+
   let sigunguCd = null;
   for (const [key, val] of Object.entries(SIGUNGU_MAP)) {
-    if (sigungu.includes(key) || key.includes(sigungu)) {
-      sigunguCd = val; break;
-    }
+    if (sigungu.includes(key) || key.includes(sigungu)) { sigunguCd = val; break; }
   }
   if (!sigunguCd) { showErr(`"${sigungu}" 시군구를 찾을 수 없습니다`); return; }
 
-  // 법정동코드 찾기
-  const bjdongCd = findBjdongCd(sigungu, dong);
-  if (!bjdongCd) { showErr(`"${dong}" 법정동 코드를 찾을 수 없습니다.\n지속적으로 오류가 나면 개발자에게 문의해주세요.`); return; }
+  if (type === 'road') {
+    showErr('도로명 주소 검색은 준비 중이에요.\n지번 주소로 검색해주세요.');
+    return;
+  }
+
+  const bjdongCd = DONG_MAP[dong] ? DONG_MAP[dong].padStart(5, '0') : null;
+  if (!bjdongCd) { showErr(`"${dong}" 법정동 코드를 찾을 수 없습니다`); return; }
 
   const parts = bunji.split('-');
   const bun = (parts[0] || '0').padStart(4, '0');
@@ -298,7 +410,8 @@ function renderResult(d, sigungu, dong, bunji) {
   const year    = d.useAprDay ? d.useAprDay.slice(0, 4) : '미상';
   const age     = year !== '미상' ? (new Date().getFullYear() - parseInt(year)) : 0;
   const struct  = d.strctCdNm     || '미상';
-  const floors  = (d.grndFlrCnt   || '-') + '층';
+  const floors  = (d.grndFlrCnt   || 3);
+  const floorLabel = floors + '층';
   const purpose = d.mainPurpsCdNm || '미상';
   const addr    = d.platPlc       || `${sigungu} ${dong} ${bunji}`;
   const bldName = d.bldNm         || '';
@@ -314,6 +427,9 @@ function renderResult(d, sigungu, dong, bunji) {
     ? ['warn',   '주의',     '#e07b39', '중위험']
     : ['ok',     '양호',     '#50c070', '저위험'];
 
+  const { svg: pipeSvg, mat } = buildPipeDiagram(floors, year, struct);
+  const matColor = mat.color;
+
   document.getElementById('result').innerHTML = `
     <div class="bcard">
       <div class="bhead">
@@ -326,9 +442,24 @@ function renderResult(d, sigungu, dong, bunji) {
       </div>
       <div class="igrid">
         <div class="iitem"><label>준공연도</label><span>${year}</span></div>
-        <div class="iitem"><label>층수</label><span>${floors}</span></div>
+        <div class="iitem"><label>층수</label><span>${floorLabel}</span></div>
         <div class="iitem"><label>구조</label><span>${struct}</span></div>
       </div>
+
+      <div class="pipesec">
+        <div class="pipetitle">
+          AI 배관 구조 추정
+          <span class="pipe-material" style="background:${matColor}22;color:${matColor};border:1px solid ${matColor}44;">${mat.name}</span>
+        </div>
+        ${pipeSvg}
+        <div class="pipe-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:${matColor}"></div>주배관</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e05050"></div>위험 구간</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#4a9ede"></div>수도 인입</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;padding:8px;background:#1a1d2a;border-radius:6px;">${mat.desc}</div>
+      </div>
+
       <div class="risksec">
         <div class="risktitle">
           AI 배관 위험 분석
@@ -365,10 +496,12 @@ function showErr(msg) {
 }
 
 document.getElementById('bunji').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
+  if (e.key === 'Enter') doSearch('jibun');
+});
+document.getElementById('road-addr').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch('road');
 });
 
-// 초기 최근 검색 렌더링
 renderRecent();
 </script>
 </body>
