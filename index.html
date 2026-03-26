@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>현상 노트 v21</title>
+<title>현상 노트 v24</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f7f6f2;--s1:#ffffff;--s2:#f2f1ed;--s3:#e8e6e0;--br:rgba(0,0,0,0.08);--br2:rgba(0,0,0,0.16);--t:#1a1916;--t2:#5a5750;--t3:#aaa89f;--ca:#2563eb;--cb:#e04e2a;--cg:#16a34a;--cy:#d97706;--cp:#7c3aed;--serif:'Noto Serif KR',serif;--mono:'DM Mono',monospace;}
@@ -492,12 +492,172 @@ body{background:var(--bg);color:var(--t);font-family:var(--serif);min-height:100
   </div>
 </div>
 
+<div class="pg" id="pg-scanner">
+  <div class="ptitle">수급 스캐너 📡</div>
+  <div class="psub">외국인 보유율 추적 · 단기·스윙 매매 타이밍</div>
+
+  <!-- 거시 환경 체크 -->
+  <div style="background:var(--s1);border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid var(--br);">
+    <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:10px;">🌤 거시 환경 체크 — 탭해서 현황 업데이트</div>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="macro-grid">
+
+      <!-- G1 유가 -->
+      <div onclick="toggleMacro(0)" id="macro-0" style="padding:12px 14px;border-radius:12px;border:1px solid var(--br);background:var(--s2);cursor:pointer;transition:all .15s;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:11px;font-family:var(--mono);color:var(--t3);font-weight:600;">G1</span>
+            <span style="font-size:13px;font-weight:700;" id="macro-0-label">유가 안정</span>
+          </div>
+          <div id="macro-0-badge" style="font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px;background:var(--s3);color:var(--t3);">미확인</div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);line-height:1.6;">
+          ✅ <b>80달러 이하</b> · ⚠️ 80~100달러 · ❌ <b>100달러+</b> → 물가·금리 위험
+          <span style="margin-left:6px;color:var(--t3);">WTI 기준 · investing.com</span>
+        </div>
+      </div>
+
+      <!-- G2 환율 -->
+      <div onclick="toggleMacro(1)" id="macro-1" style="padding:12px 14px;border-radius:12px;border:1px solid var(--br);background:var(--s2);cursor:pointer;transition:all .15s;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:11px;font-family:var(--mono);color:var(--t3);font-weight:600;">G2</span>
+            <span style="font-size:13px;font-weight:700;" id="macro-1-label">환율 안정</span>
+          </div>
+          <div id="macro-1-badge" style="font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px;background:var(--s3);color:var(--t3);">미확인</div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);line-height:1.6;">
+          ✅ <b>1,350원 이하</b> · ⚠️ 1,350~1,400원 · ❌ <b>1,400원+</b> → 외국인 이탈
+          <span style="margin-left:6px;color:var(--t3);">원/달러 · 네이버 검색</span>
+        </div>
+      </div>
+
+      <!-- G3 금리 -->
+      <div onclick="toggleMacro(2)" id="macro-2" style="padding:12px 14px;border-radius:12px;border:1px solid var(--br);background:var(--s2);cursor:pointer;transition:all .15s;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:11px;font-family:var(--mono);color:var(--t3);font-weight:600;">G3</span>
+            <span style="font-size:13px;font-weight:700;" id="macro-2-label">연준 금리 동결·인하</span>
+          </div>
+          <div id="macro-2-badge" style="font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px;background:var(--s3);color:var(--t3);">미확인</div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);line-height:1.6;">
+          ✅ <b>동결·인하 기조</b> · ⚠️ 인상 논의 · ❌ <b>실제 인상</b> → 성장주 약세
+          <span style="margin-left:6px;color:var(--t3);">FOMC 연 8회 · 구글 "Fed rate"</span>
+        </div>
+      </div>
+
+      <!-- G4 지정학 -->
+      <div onclick="toggleMacro(3)" id="macro-3" style="padding:12px 14px;border-radius:12px;border:1px solid var(--br);background:var(--s2);cursor:pointer;transition:all .15s;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:11px;font-family:var(--mono);color:var(--t3);font-weight:600;">G4</span>
+            <span style="font-size:13px;font-weight:700;" id="macro-3-label">지정학 리스크 완화</span>
+          </div>
+          <div id="macro-3-badge" style="font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px;background:var(--s3);color:var(--t3);">미확인</div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);line-height:1.6;">
+          ✅ <b>협상·휴전</b> · ⚠️ 긴장 고조 · ❌ <b>전면전·호르무즈 봉쇄</b> → 유가 폭등
+          <span style="margin-left:6px;color:var(--t3);">구글 뉴스 "이란 전쟁"</span>
+        </div>
+      </div>
+
+    </div>
+    <div id="macro-signal" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--s2);font-size:12px;font-family:var(--mono);color:var(--t3);text-align:center;">
+      날씨 체크 후 투자 환경을 확인하세요
+    </div>
+
+    <!-- 가장 두려운 시나리오 경고 -->
+    <div id="macro-danger" style="display:none;margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(224,78,42,.08);border:1px solid rgba(224,78,42,.2);font-size:12px;color:var(--cb);line-height:1.7;">
+      ⚠️ <b>가장 두려운 시나리오</b><br>
+      이란戰 → 유가 100달러+ → 물가↑ → 금리인상 → 달러강세 → 외국인 이탈 → 코스피 폭락
+    </div>
+  </div>
+
+  <!-- 종목 추가 버튼 -->
+  <button onclick="openScannerModal()" style="width:100%;padding:13px;border-radius:14px;border:1px dashed var(--br2);background:none;color:var(--ca);font-family:var(--mono);font-size:14px;cursor:pointer;margin-bottom:16px;font-weight:500;">+ 수급 추적 종목 추가</button>
+
+  <!-- 종목 리스트 -->
+  <div id="scanner-list"></div>
+</div>
+
+<!-- 수급 스캐너 모달 -->
+<div class="um" id="scanner-modal" onclick="closeScannerModal(event)">
+  <div class="umi" style="max-height:88vh;overflow-y:auto;">
+    <h3 id="scanner-modal-title">수급 추적 종목 추가</h3>
+
+    <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:6px;">종목명</div>
+    <input id="sc-name" placeholder="예) 셀바스AI" style="width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--t);font-family:var(--serif);font-size:14px;padding:10px 12px;outline:none;margin-bottom:10px;">
+
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">현재가</div>
+        <input id="sc-price" placeholder="예) 16,340" style="width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--t);font-family:var(--serif);font-size:13px;padding:9px 12px;outline:none;">
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">외국인 보유율 (%)</div>
+        <input id="sc-rate" placeholder="예) 3.57" type="number" step="0.01" style="width:100%;background:var(--s2);border:1px solid rgba(37,99,235,.3);border-radius:10px;color:var(--ca);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;font-weight:600;">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">보유율 최저점 (%)</div>
+        <input id="sc-low" placeholder="예) 1.03" type="number" step="0.01" style="width:100%;background:var(--s2);border:1px solid rgba(22,163,74,.3);border-radius:10px;color:var(--cg);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;font-weight:600;">
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">수급 단계</div>
+        <select id="sc-step" style="width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--t);font-family:var(--serif);font-size:13px;padding:9px 12px;outline:none;cursor:pointer;">
+          <option value="0">⬜ 1단계 — 관심</option>
+          <option value="1">🔵 2단계 — 준비</option>
+          <option value="2">🎯 3단계 — 진입!</option>
+          <option value="3">🚀 4단계 — 확인!</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 공매도 항목 -->
+    <div style="background:rgba(224,78,42,.04);border:1px solid rgba(224,78,42,.15);border-radius:12px;padding:12px;margin-bottom:14px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--cb);letter-spacing:.1em;margin-bottom:10px;font-weight:600;">📉 공매도 현황</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">공매도 잔고 비율 (%)</div>
+          <input id="sc-short" placeholder="예) 3.2" type="number" step="0.01" style="width:100%;background:var(--s1);border:1px solid rgba(224,78,42,.2);border-radius:10px;color:var(--cb);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;font-weight:600;">
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:5px;">공매도 잔고 방향</div>
+          <select id="sc-short-dir" style="width:100%;background:var(--s1);border:1px solid rgba(224,78,42,.2);border-radius:10px;color:var(--t);font-family:var(--serif);font-size:13px;padding:9px 12px;outline:none;cursor:pointer;">
+            <option value="">선택</option>
+            <option value="up">📈 증가중 (누르는 중)</option>
+            <option value="peak">🔺 고점 (정점)</option>
+            <option value="down">📉 감소중 ← 주목!</option>
+            <option value="squeeze">⚡ 급감 (숏스퀴즈!)</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.6;">
+        💡 공매도 잔고 감소 = 숏커버링 시작 → 강제 매수 압력 → 주가 상승 촉진
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:6px;">🔥 트리거 (내부·외부 이슈)</div>
+    <textarea id="sc-trigger" placeholder="예) 3/25 실적발표 예정&#10;예) 미이란 전쟁 완화 기대&#10;예) 자사주 소각 발표" rows="3" style="width:100%;background:var(--s2);border:1px solid rgba(224,78,42,.2);border-radius:10px;color:var(--t2);font-family:var(--serif);font-size:13px;padding:10px 12px;outline:none;resize:none;margin-bottom:14px;line-height:1.7;"></textarea>
+
+    <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:6px;">📝 메모</div>
+    <textarea id="sc-memo" placeholder="수급 패턴 분석 메모..." rows="2" style="width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--t2);font-family:var(--serif);font-size:13px;padding:10px 12px;outline:none;resize:none;margin-bottom:14px;line-height:1.6;"></textarea>
+
+    <div class="umbtns">
+      <button class="umcancel" onclick="closeScannerModal()">취소</button>
+      <button class="umsave" onclick="saveScanner()">저장</button>
+    </div>
+  </div>
+</div>
+
 <nav class="bnav">
   <button class="nb on" onclick="goP('write',this)"><span class="ni">✏</span>작성</button>
   <button class="nb" onclick="goP('history',this)"><span class="ni">📋</span>기록</button>
   <button class="nb" onclick="goP('stock',this)"><span class="ni">📊</span>시황판</button>
   <button class="nb" onclick="goP('map',this)"><span class="ni">🏢</span>그룹맵</button>
-  <button class="nb" onclick="goP('graph',this)"><span class="ni">📈</span>그래프</button>
+  <button class="nb" onclick="goP('scanner',this)"><span class="ni">📡</span>스캐너</button>
   <button class="nb" onclick="goP('setting',this)"><span class="ni">⚙</span>설정</button>
 </nav>
 
@@ -557,6 +717,7 @@ function goP(id,btn){
   if(id==='share')renderShare();
   if(id==='stock')renderSihwang();
   if(id==='map')renderMapGroup();
+  if(id==='scanner')renderScanner();
   if(id==='setting'){
     const st=document.getElementById('key-status');
     if(getKey()){st.textContent='✓ 저장됨';st.style.color='var(--cg)';}
@@ -1483,7 +1644,256 @@ function getManualHistory(){
 }
 
 
-// ── 지주회사 맵 ──
+// ── 수급 스캐너 ──
+let scannerStocks=JSON.parse(localStorage.getItem('ph-scanner')||'[]');
+let editScanIdx=-1;
+let macroChecked=[false,false,false,false];
+
+function persistScanner(){localStorage.setItem('ph-scanner',JSON.stringify(scannerStocks));}
+
+function toggleMacro(idx){
+  macroChecked[idx]=!macroChecked[idx];
+  updateMacroUI();
+}
+
+function updateMacroUI(){
+  const badges=['미확인','미확인','미확인','미확인'];
+  macroChecked.forEach((on,i)=>{
+    const el=document.getElementById('macro-'+i);
+    const badge=document.getElementById('macro-'+i+'-badge');
+    if(!el)return;
+    el.style.background=on?'rgba(22,163,74,.06)':'var(--s2)';
+    el.style.borderColor=on?'var(--cg)':'var(--br)';
+    if(badge){
+      badge.style.background=on?'rgba(22,163,74,.12)':'var(--s3)';
+      badge.style.color=on?'var(--cg)':'var(--t3)';
+      badge.textContent=on?'✅ 안전':'미확인';
+    }
+  });
+  const cnt=macroChecked.filter(v=>v).length;
+  const sig=document.getElementById('macro-signal');
+  const danger=document.getElementById('macro-danger');
+  if(!sig)return;
+  if(cnt===4){
+    sig.style.background='rgba(22,163,74,.08)';sig.style.color='var(--cg)';
+    sig.textContent='🌤 완벽한 투자 환경! 적극 매수 고려';
+    if(danger)danger.style.display='none';
+  } else if(cnt>=3){
+    sig.style.background='rgba(217,119,6,.06)';sig.style.color='var(--cy)';
+    sig.textContent='⛅ 대체로 좋음. 선별적 매수 가능';
+    if(danger)danger.style.display='none';
+  } else if(cnt>=2){
+    sig.style.background='rgba(0,0,0,.04)';sig.style.color='var(--t3)';
+    sig.textContent='🌥 불안정. 단기만 신중하게';
+    if(danger)danger.style.display='none';
+  } else {
+    sig.style.background='rgba(224,78,42,.06)';sig.style.color='var(--cb)';
+    sig.textContent='⛈ 위험! 이란戰·고유가·금리인상 경계!';
+    if(danger)danger.style.display='block';
+  }
+}
+
+function renderScanner(){
+  updateMacroUI();
+  const list=document.getElementById('scanner-list');
+  if(!list)return;
+  if(!scannerStocks.length){
+    list.innerHTML='<div class="empty">추적 종목이 없습니다.<br>+ 버튼으로 종목을 추가해보세요.</div>';
+    return;
+  }
+  const sorted=[...scannerStocks].map((s,i)=>({...s,_idx:i})).sort((a,b)=>(b.step||0)-(a.step||0));
+  list.innerHTML=sorted.map(s=>makeScanCard(s,s._idx)).join('');
+}
+
+function makeScanCard(s,idx){
+  const stepInfo=[
+    ['⬜','관심','var(--t3)','rgba(0,0,0,.04)'],
+    ['🔵','준비','var(--ca)','rgba(37,99,235,.06)'],
+    ['🎯','진입!','var(--cg)','rgba(22,163,74,.08)'],
+    ['🚀','확인!','var(--cg)','rgba(22,163,74,.14)'],
+  ];
+  const si=stepInfo[s.step||0];
+  const rate=parseFloat(s.rate||0);
+  const low=parseFloat(s.low||0);
+  const isNearLow=low>0&&rate>0&&rate<=low*1.3;
+  const diff=low>0&&rate>0?((rate-low)/low*100).toFixed(1):null;
+  return `<div onclick="openScannerDetail(${idx})" style="background:var(--s1);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--br);border-left:4px solid ${si[2]};cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 3px 12px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='0 1px 4px rgba(0,0,0,.05)'">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+      <div>
+        <div style="font-size:16px;font-weight:700;color:var(--t);">${s.name}</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-top:2px;">${s.price?s.price+'원 · ':''}${s.updatedAt||''}</div>
+      </div>
+      <span style="font-size:11px;font-family:var(--mono);font-weight:600;padding:3px 10px;border-radius:20px;background:${si[3]};color:${si[2]};white-space:nowrap;">${si[0]} ${si[1]}</span>
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:11px;font-family:var(--mono);color:var(--t3);">외국인 보유율</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${low>0?`<span style="font-size:10px;font-family:var(--mono);color:var(--t3);">최저 ${low}%</span>`:''}
+          <span style="font-size:14px;font-family:var(--mono);font-weight:700;color:${isNearLow?'var(--cg)':'var(--ca)'};">${rate}%</span>
+          ${diff!==null?`<span style="font-size:10px;font-family:var(--mono);color:${parseFloat(diff)<=20?'var(--cg)':'var(--t3)'};">${parseFloat(diff)>0?'+':''}${diff}%</span>`:''}
+        </div>
+      </div>
+      <div style="height:5px;background:var(--s2);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${Math.min(Math.max(rate*4,4),100)}%;background:${isNearLow?'var(--cg)':'var(--ca)'};border-radius:3px;"></div>
+      </div>
+      ${isNearLow?`<div style="font-size:10px;font-family:var(--mono);color:var(--cg);margin-top:3px;font-weight:600;">⚡ 최저점 근처! 트리거 대기</div>`:''}
+    </div>
+    ${s.trigger?`<div style="font-size:12px;color:var(--cb);padding:7px 10px;background:rgba(224,78,42,.05);border-radius:8px;border-left:3px solid var(--cb);line-height:1.6;margin-bottom:6px;">🔥 ${s.trigger.split('\n')[0]}</div>`:''}
+    ${s.short?`<div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+      <span style="font-size:10px;font-family:var(--mono);color:var(--t3);">공매도 잔고</span>
+      <span style="font-size:12px;font-family:var(--mono);font-weight:700;color:var(--cb);">${s.short}%</span>
+      ${s.shortDir==='down'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cg);font-weight:600;">📉 감소중 ← 주목!</span>':
+        s.shortDir==='squeeze'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cg);font-weight:700;">⚡ 숏스퀴즈!</span>':
+        s.shortDir==='peak'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cy);">🔺 고점</span>':
+        s.shortDir==='up'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cb);">📈 증가중</span>':''}
+    </div>`:''}
+  </div>`;
+}
+
+function openScannerDetail(idx){
+  const s=scannerStocks[idx];
+  const stepInfo=[
+    ['⬜','관심 등록','var(--t3)'],
+    ['🔵','준비 신호','var(--ca)'],
+    ['🎯','진입 신호!','var(--cg)'],
+    ['🚀','확인 신호!','var(--cg)'],
+  ];
+  const si=stepInfo[s.step||0];
+  const rate=parseFloat(s.rate||0);
+  const low=parseFloat(s.low||0);
+  const isNearLow=low>0&&rate>0&&rate<=low*1.3;
+  document.getElementById('modal-inner').innerHTML=`
+    <div class="mhd"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <div style="font-size:20px;font-weight:700;">${s.name}</div>
+        <div style="font-size:12px;font-family:var(--mono);color:var(--t3);margin-top:3px;">${s.price?s.price+'원 · ':''}${s.updatedAt||''}</div>
+      </div>
+      <span style="font-size:12px;font-family:var(--mono);font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(0,0,0,.06);color:${si[2]};">${si[0]} ${si[1]}</span>
+    </div>
+    <div style="background:var(--s2);border-radius:14px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:10px;">📊 외국인 보유율</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div style="background:var(--s1);border-radius:10px;padding:12px;text-align:center;">
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);margin-bottom:4px;">현재</div>
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--ca);">${rate}%</div>
+        </div>
+        <div style="background:var(--s1);border-radius:10px;padding:12px;text-align:center;">
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);margin-bottom:4px;">최저점</div>
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--cg);">${low?low+'%':'—'}</div>
+        </div>
+      </div>
+      ${isNearLow?`<div style="padding:10px 12px;border-radius:10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.2);font-size:13px;color:var(--cg);font-weight:600;text-align:center;">⚡ 최저점 근처! 트리거 대기 중</div>`:''}
+    </div>
+    <div style="background:var(--s2);border-radius:14px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:10px;">📡 수급 4단계</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        ${[['1단계','보유율최저+거래량급감','var(--ca)'],['2단계','하락중 외국인매수','var(--cy)'],['3단계 🎯','기관도 순매수전환','var(--cg)'],['4단계 🚀','거래량폭발+양봉','var(--cg)']].map(([t,d,c],i)=>{
+          const on=(s.step||0)>i,cur=(s.step||0)===i;
+          return `<div style="background:${on?'rgba(22,163,74,.06)':cur?'rgba(37,99,235,.06)':'var(--s1)'};border:1px solid ${on?'var(--cg)':cur?'var(--ca)':'var(--br)'};border-radius:10px;padding:10px 12px;">
+            <div style="font-size:11px;font-family:var(--mono);font-weight:600;color:${on?'var(--cg)':cur?'var(--ca)':'var(--t3)'};margin-bottom:3px;">${on?'✓ ':cur?'▶ ':''}${t}</div>
+            <div style="font-size:11px;color:var(--t3);line-height:1.5;">${d}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${s.trigger?`<div style="background:rgba(224,78,42,.05);border:1px solid rgba(224,78,42,.2);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--cb);letter-spacing:.1em;margin-bottom:6px;font-weight:600;">🔥 트리거</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.75;white-space:pre-line;">${s.trigger}</div>
+    </div>`:''}
+    ${s.short?`<div style="background:rgba(224,78,42,.04);border:1px solid rgba(224,78,42,.15);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--cb);letter-spacing:.1em;margin-bottom:10px;font-weight:600;">📉 공매도 현황</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="text-align:center;">
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);margin-bottom:4px;">잔고 비율</div>
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--cb);">${s.short}%</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;background:${
+          s.shortDir==='squeeze'?'rgba(22,163,74,.1)':
+          s.shortDir==='down'?'rgba(22,163,74,.06)':
+          s.shortDir==='peak'?'rgba(217,119,6,.06)':
+          'rgba(224,78,42,.06)'};color:${
+          s.shortDir==='squeeze'||s.shortDir==='down'?'var(--cg)':
+          s.shortDir==='peak'?'var(--cy)':'var(--cb)'};">
+          ${s.shortDir==='squeeze'?'⚡ 숏스퀴즈 임박!':
+            s.shortDir==='down'?'📉 감소중 — 숏커버링 시작':
+            s.shortDir==='peak'?'🔺 고점 — 곧 감소 예상':
+            s.shortDir==='up'?'📈 증가중 — 아직 누르는 중':'—'}
+        </div>
+      </div>
+      ${s.shortDir==='down'||s.shortDir==='squeeze'?`
+      <div style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(22,163,74,.08);font-size:12px;color:var(--cg);line-height:1.6;">
+        💡 공매도 감소 = 숏커버링 강제 매수 + 외국인 현물 매수 = 이중 상승 압력!
+      </div>`:''}
+    </div>`:''}
+    ${s.memo?`<div style="font-size:13px;color:var(--t3);font-style:italic;padding:10px 0;border-top:1px solid var(--br);margin-bottom:12px;line-height:1.65;">"${s.memo}"</div>`:''}
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeMo();openScannerModal(${idx})" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--br);background:var(--s2);color:var(--t2);font-family:var(--serif);font-size:14px;cursor:pointer;">수정</button>
+      <button onclick="closeMo();deleteScanner(${idx})" style="padding:12px 16px;border-radius:10px;border:1px solid var(--br);background:none;color:var(--t3);font-family:var(--serif);font-size:14px;cursor:pointer;">삭제</button>
+      <button onclick="closeMo()" style="padding:12px 16px;border-radius:10px;border:none;background:var(--t);color:#fff;font-family:var(--serif);font-size:14px;cursor:pointer;">닫기</button>
+    </div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function openScannerModal(idx){
+  editScanIdx=idx!==undefined?idx:-1;
+  document.getElementById('scanner-modal-title').textContent=editScanIdx>=0?'수급 종목 수정':'수급 추적 종목 추가';
+  ['sc-name','sc-price','sc-rate','sc-low','sc-short','sc-trigger','sc-memo'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('sc-step').value='0';
+  document.getElementById('sc-short-dir').value='';
+  if(editScanIdx>=0){
+    const s=scannerStocks[editScanIdx];
+    document.getElementById('sc-name').value=s.name||'';
+    document.getElementById('sc-price').value=s.price||'';
+    document.getElementById('sc-rate').value=s.rate||'';
+    document.getElementById('sc-low').value=s.low||'';
+    document.getElementById('sc-short').value=s.short||'';
+    document.getElementById('sc-short-dir').value=s.shortDir||'';
+    document.getElementById('sc-trigger').value=s.trigger||'';
+    document.getElementById('sc-memo').value=s.memo||'';
+    document.getElementById('sc-step').value=s.step||'0';
+  }
+  document.getElementById('scanner-modal').classList.add('open');
+}
+
+function closeScannerModal(e){
+  if(!e||e.target.id==='scanner-modal')
+    document.getElementById('scanner-modal').classList.remove('open');
+}
+
+function saveScanner(){
+  const name=document.getElementById('sc-name').value.trim();
+  if(!name){toast('종목명을 입력해주세요');return;}
+  const stock={
+    name,
+    price:document.getElementById('sc-price').value.trim(),
+    rate:document.getElementById('sc-rate').value.trim(),
+    low:document.getElementById('sc-low').value.trim(),
+    short:document.getElementById('sc-short').value.trim(),
+    shortDir:document.getElementById('sc-short-dir').value,
+    trigger:document.getElementById('sc-trigger').value.trim(),
+    memo:document.getElementById('sc-memo').value.trim(),
+    step:parseInt(document.getElementById('sc-step').value)||0,
+    updatedAt:new Date().toISOString().split('T')[0]
+  };
+  if(editScanIdx>=0)scannerStocks[editScanIdx]=stock;
+  else scannerStocks.unshift(stock);
+  persistScanner();
+  document.getElementById('scanner-modal').classList.remove('open');
+  renderScanner();
+  toast(editScanIdx>=0?'수정됐습니다 ✓':'종목이 추가됐습니다 ✓');
+}
+
+function deleteScanner(idx){
+  if(!confirm('"'+scannerStocks[idx].name+'" 종목을 삭제할까요?'))return;
+  scannerStocks.splice(idx,1);
+  persistScanner();
+  renderScanner();
+  toast('삭제됐습니다');
+}
+
+// ── 피터 린치 6가지 카테고리 가이드 ──
 const MAP_GROUPS={
   samsung:{name:'삼성그룹',color:'#1428A0',logo:'삼',holding:'삼성물산 (사실상 지주)',
     stats:[{val:'22개',label:'상장 계열사'},{val:'460조',label:'총 자산'},{val:'반도체 1위',label:'핵심사업'}],
