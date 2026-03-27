@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>현상 노트 v27</title>
+<title>현상 노트 v28</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f7f6f2;--s1:#ffffff;--s2:#f2f1ed;--s3:#e8e6e0;--br:rgba(0,0,0,0.08);--br2:rgba(0,0,0,0.16);--t:#1a1916;--t2:#5a5750;--t3:#aaa89f;--ca:#2563eb;--cb:#e04e2a;--cg:#16a34a;--cy:#d97706;--cp:#7c3aed;--serif:'Noto Serif KR',serif;--mono:'DM Mono',monospace;}
@@ -2139,6 +2139,8 @@ function drawScannerChart(canvasId,rows){
   ctx.fillStyle='rgba(224,78,42,.7)';ctx.fillRect(pad.l+270,6,12,10);
   ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillText('외국인매도',pad.l+285,16);
 }
+
+function deleteScanner(idx){
   if(!confirm('"'+scannerStocks[idx].name+'" 종목을 삭제할까요?'))return;
   scannerStocks.splice(idx,1);
   persistScanner();
