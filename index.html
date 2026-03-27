@@ -665,6 +665,55 @@ body{padding-top:54px;}
       </div>
     </div>
 
+    <!-- 가설 체크리스트 -->
+    <div style="background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px;margin-bottom:14px;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--cp);letter-spacing:.1em;margin-bottom:12px;font-weight:600;">🧪 가설 체크리스트</div>
+
+      <!-- 가설 1 -->
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:8px;">가설 1 — 바닥 확인 3단 신호</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h1-c1" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">📉 거래량 폭발 + 음봉 <span style="font-family:var(--mono);font-size:11px;color:var(--t3);">(공매도 패닉 청산)</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h1-c2" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">🎯 공매도 잔고 0 or 급감 확인</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h1-c3" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">🕯 다음날 양봉 + 거래량 폭발 <span style="font-family:var(--mono);font-size:11px;color:var(--t3);">(매집 시작)</span></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div style="height:1px;background:var(--br);margin-bottom:12px;"></div>
+
+      <!-- 가설 2 -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:8px;">가설 2 — 수급 3단계 진입</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h2-c1" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">🔵 외국인 순매수 2일 이상 연속</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h2-c2" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">🏦 기관도 순매수 전환 확인</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="h2-c3" style="width:16px;height:16px;accent-color:var(--cp);cursor:pointer;">
+            <span style="font-size:12px;color:var(--t2);">📉 공매도 잔고 감소 추세</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 충족 현황 -->
+      <div id="hypo-summary" style="margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--s1);font-size:12px;font-family:var(--mono);color:var(--t3);text-align:center;">조건을 체크하면 신호 강도가 표시됩니다</div>
+    </div>
+
     <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.1em;margin-bottom:6px;">🔥 트리거 (내부·외부 이슈)</div>
     <textarea id="sc-trigger" placeholder="예) 3/25 실적발표 예정&#10;예) 미이란 전쟁 완화 기대&#10;예) 자사주 소각 발표" rows="3" style="width:100%;background:var(--s2);border:1px solid rgba(224,78,42,.2);border-radius:10px;color:var(--t2);font-family:var(--serif);font-size:13px;padding:10px 12px;outline:none;resize:none;margin-bottom:14px;line-height:1.7;"></textarea>
 
@@ -1785,6 +1834,19 @@ function makeScanCard(s,idx){
         s.shortDir==='peak'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cy);">🔺 고점</span>':
         s.shortDir==='up'?'<span style="font-size:10px;font-family:var(--mono);color:var(--cb);">📈 증가중</span>':''}
     </div>`:''}
+    ${(()=>{
+      const h=s.hypo||{h1:[],h2:[]};
+      const h1=( h.h1||[]).filter(Boolean).length;
+      const h2=(h.h2||[]).filter(Boolean).length;
+      const total=h1+h2;
+      if(total===0)return '';
+      const sig=total>=5?'🚀 강력 신호':total>=3?'🔥 복합 신호':total>=1?'👀 일부 충족':'';
+      const col=total>=5?'var(--cg)':total>=3?'var(--cb)':'var(--cy)';
+      return `<div style="margin-top:7px;display:flex;align-items:center;gap:6px;">
+        <span style="font-size:11px;font-family:var(--mono);font-weight:700;color:${col};">${sig}</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--t3);">가설1 ${h1}/3 · 가설2 ${h2}/3</span>
+      </div>`;
+    })()}
   </div>`;
 }
 
@@ -1891,6 +1953,8 @@ function openScannerDetail(idx){
   ['sc-name','sc-price','sc-rate','sc-low','sc-short','sc-trigger','sc-memo'].forEach(id=>{document.getElementById(id).value='';});
   document.getElementById('sc-step').value='0';
   document.getElementById('sc-short-dir').value='';
+  ['h1-c1','h1-c2','h1-c3','h2-c1','h2-c2','h2-c3'].forEach(id=>document.getElementById(id).checked=false);
+  updateHypoSummary();
   if(editScanIdx>=0){
     const s=scannerStocks[editScanIdx];
     document.getElementById('sc-name').value=s.name||'';
@@ -1903,6 +1967,11 @@ function openScannerDetail(idx){
     document.getElementById('sc-memo').value=s.memo||'';
     document.getElementById('sc-step').value=s.step||'0';
     loadScanRows(s.rows||[]);
+    // 가설 체크 불러오기
+    const h=s.hypo||{h1:[false,false,false],h2:[false,false,false]};
+    ['h1-c1','h1-c2','h1-c3'].forEach((id,i)=>document.getElementById(id).checked=h.h1[i]||false);
+    ['h2-c1','h2-c2','h2-c3'].forEach((id,i)=>document.getElementById(id).checked=h.h2[i]||false);
+    updateHypoSummary();
   } else {
     resetScanRows();
   }
@@ -1928,6 +1997,10 @@ function saveScanner(){
     memo:document.getElementById('sc-memo').value.trim(),
     step:parseInt(document.getElementById('sc-step').value)||0,
     rows:[...scanRows],
+    hypo:{
+      h1:[document.getElementById('h1-c1').checked, document.getElementById('h1-c2').checked, document.getElementById('h1-c3').checked],
+      h2:[document.getElementById('h2-c1').checked, document.getElementById('h2-c2').checked, document.getElementById('h2-c3').checked],
+    },
     updatedAt:new Date().toISOString().split('T')[0]
   };
   if(editScanIdx>=0)scannerStocks[editScanIdx]=stock;
@@ -1968,14 +2041,32 @@ function renderScanRows(){
     </div>`).join('');
 }
 
-function updateScanRow(idx,field,val){
-  if(scanRows[idx])scanRows[idx][field]=val;
-  // 색상 업데이트
-  renderScanRows();
+function updateHypoSummary(){
+  const h1=['h1-c1','h1-c2','h1-c3'].filter(id=>document.getElementById(id)&&document.getElementById(id).checked).length;
+  const h2=['h2-c1','h2-c2','h2-c3'].filter(id=>document.getElementById(id)&&document.getElementById(id).checked).length;
+  const el=document.getElementById('hypo-summary');
+  if(!el)return;
+  const total=h1+h2;
+  const signal=total>=5?'🚀 강력 신호! 즉시 진입 검토':total>=3?'🔥 복합 신호 감지 — 진입 주시':total>=1?'👀 일부 조건 충족 — 관찰 중':'⏳ 조건 대기 중';
+  const color=total>=5?'var(--cg)':total>=3?'var(--cb)':total>=1?'var(--cy)':'var(--t3)';
+  el.innerHTML=`<span style="color:${color};font-weight:600;">${signal}</span><br><span style="font-size:11px;color:var(--t3);">가설1 ${h1}/3 · 가설2 ${h2}/3 · 총 ${total}/6 충족</span>`;
 }
+
+// 체크박스 이벤트 연결 (DOMContentLoaded 이후)
+document.addEventListener('DOMContentLoaded',()=>{
+  ['h1-c1','h1-c2','h1-c3','h2-c1','h2-c2','h2-c3'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('change',updateHypoSummary);
+  });
+});
 
 function removeScanRow(idx){
   scanRows.splice(idx,1);
+  renderScanRows();
+}
+
+function updateScanRow(idx,field,val){
+  if(scanRows[idx])scanRows[idx][field]=val;
   renderScanRows();
 }
 
