@@ -9,7 +9,8 @@
 :root{--bg:#f7f6f2;--s1:#ffffff;--s2:#f2f1ed;--s3:#e8e6e0;--br:rgba(0,0,0,0.08);--br2:rgba(0,0,0,0.16);--t:#1a1916;--t2:#5a5750;--t3:#aaa89f;--ca:#2563eb;--cb:#e04e2a;--cg:#16a34a;--cy:#d97706;--cp:#7c3aed;--serif:'Noto Serif KR',serif;--mono:'DM Mono',monospace;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--t);font-family:var(--serif);min-height:100vh;}
-.topnav{position:sticky;top:0;left:0;right:0;background:var(--s1);border-bottom:1px solid var(--br);display:flex;align-items:center;z-index:200;padding:0 32px;box-shadow:0 2px 8px rgba(0,0,0,0.06);gap:2px;}
+.topnav{position:fixed;top:0;left:0;right:0;background:var(--s1);border-bottom:1px solid var(--br);display:flex;align-items:center;z-index:200;padding:0 32px;box-shadow:0 2px 8px rgba(0,0,0,0.06);gap:2px;height:54px;}
+body{padding-top:54px;}
 .topnav-logo{font-size:18px;font-weight:700;margin-right:24px;color:var(--t);white-space:nowrap;letter-spacing:-.02em;flex-shrink:0;}
 .nb{display:flex;align-items:center;gap:6px;padding:16px 18px;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;color:var(--t3);font-family:var(--serif);font-size:14px;font-weight:500;transition:all .2s;white-space:nowrap;}
 .nb:hover{color:var(--t2);}
@@ -240,10 +241,18 @@ body{background:var(--bg);color:var(--t);font-family:var(--serif);min-height:100
 </head>
 <body>
 
+<nav class="topnav">
+  <div class="topnav-logo">현<span style="color:var(--ca)">상</span>노<span style="color:var(--cb)">트</span></div>
+  <button class="nb on" onclick="goP('write',this)"><span class="ni">✏</span>작성</button>
+  <button class="nb" onclick="goP('history',this)"><span class="ni">📋</span>기록</button>
+  <button class="nb" onclick="goP('stock',this)"><span class="ni">📊</span>시황판</button>
+  <button class="nb" onclick="goP('map',this)"><span class="ni">🏢</span>그룹맵</button>
+  <button class="nb" onclick="goP('scanner',this)"><span class="ni">📡</span>수급스캐너</button>
+  <button class="nb" onclick="goP('setting',this)"><span class="ni">⚙</span>설정</button>
+</nav>
+
 <div class="pg on" id="pg-write">
-  <div class="ptitle">현<span style="color:var(--ca)">상</span> 노<span style="color:var(--cb)">트</span></div>
-  <div class="psub">파동 사고 훈련 일지 — AI 주가 연동</div>
-  <div class="dr">
+  <div class="dr" style="margin-bottom:22px;">
     <input type="date" id="d-date">
     <span class="dpill" id="d-day">월요일</span>
     <input class="si" id="d-sum" placeholder="오늘의 한 줄 사유...">
@@ -688,16 +697,6 @@ body{background:var(--bg);color:var(--t);font-family:var(--serif);min-height:100
     </div>
   </div>
 </div>
-
-<nav class="topnav">
-  <div class="topnav-logo">현<span style="color:var(--ca)">상</span>노<span style="color:var(--cb)">트</span></div>
-  <button class="nb on" onclick="goP('write',this)"><span class="ni">✏</span>작성</button>
-  <button class="nb" onclick="goP('history',this)"><span class="ni">📋</span>기록</button>
-  <button class="nb" onclick="goP('stock',this)"><span class="ni">📊</span>시황판</button>
-  <button class="nb" onclick="goP('map',this)"><span class="ni">🏢</span>그룹맵</button>
-  <button class="nb" onclick="goP('scanner',this)"><span class="ni">📡</span>수급스캐너</button>
-  <button class="nb" onclick="goP('setting',this)"><span class="ni">⚙</span>설정</button>
-</nav>
 
 <div class="mo" id="modal" onclick="closeMo(event)"><div class="mi" id="modal-inner"></div></div>
 <div class="um" id="um" onclick="closeUM(event)">
